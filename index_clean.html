@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+<title>NOMA — Escola Virtual de Inglês | Own Your Path</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&family=Lora:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <img src="IMAGEM_BASE64" alt="NOMA" class="nav-logo">
+  <div class="nav-right">
+    <div class="nav-social">
+      <a href="https://www.instagram.com/learnwith.noma" target="_blank" rel="noopener" title="Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@learnwith.noma" target="_blank" rel="noopener" title="TikTok">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+      </a>
+      <a href="https://wa.me/5515988137161?text=Hi%20Teacher%20Juli!%20Quero%20mais%20informa%C3%A7%C3%B5es" target="_blank" rel="noopener" title="WhatsApp">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.558 4.126 1.532 5.858L0 24l6.335-1.652A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.37l-.36-.214-3.728.972.994-3.634-.235-.374A9.818 9.818 0 1 1 12 21.818z"/></svg>
+      </a>
+    </div>
+    <a href="#quiz" class="nav-cta">Descubra seu plano</a>
+    <button class="hamburger" id="hbg" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- DRAWER MENU -->
+<div id="nav-drawer" class="nav-drawer">
+  <div class="nav-drawer-header">
+    <span class="nav-drawer-title">Menu</span>
+    <button class="nav-drawer-close" id="nav-drawer-close" aria-label="Fechar menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <ul class="nav-drawer-links">
+    <li><a href="#sobre" onclick="closeDrawer()">Sobre</a></li>
+    <li><a href="#valores" onclick="closeDrawer()">Essência</a></li>
+    <li><a href="#turmas" onclick="closeDrawer()">Turmas</a></li>
+    <li><a href="#estilos" onclick="closeDrawer()">Estilos</a></li>
+    <li><a href="#experimental" onclick="closeDrawer()">Aula Experimental</a></li>
+    <li><a href="#area-aluno" onclick="closeDrawer()">Área do Aluno</a></li>
+    <li><a href="#pacotes" onclick="closeDrawer()">Planos</a></li>
+    <li><a href="#quiz" onclick="closeDrawer()">Quiz</a></li>
+    <li><a href="#teacher-juli" onclick="closeDrawer()">About me</a></li>
+  </ul>
+  <a href="#quiz" class="nav-drawer-cta" onclick="closeDrawer()">Descubra seu plano</a>
+</div>
+<div id="nav-overlay" class="nav-overlay" onclick="closeDrawer()"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-pattern">
+    <img src="IMAGEM_BASE64" alt="">
+  </div>
+  <div class="hero-content">
+    <img src="IMAGEM_BASE64" alt="NOMA Own your path" class="hero-logo">
+    <p class="hero-tagline">Escola virtual de inglês</p>
+    <p class="hero-by">By Teacher Juli</p>
+    <h1 class="hero-title">Own your<em>path.</em></h1>
+    <p class="hero-sub">Aprender inglês não é sobre memorizar regras. É sobre encontrar sua voz e levar ela para o mundo.</p>
+    <div class="hero-buttons">
+      <a href="#quiz" class="btn-primary">Descubra seu plano ideal</a>
+      <a href="#turmas" class="btn-secondary">Conhecer as turmas</a>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section class="about" id="sobre">
+  <div class="about-pattern">
+    <img src="IMAGEM_BASE64" alt="">
+  </div>
+  <div class="about-inner">
+    <div>
+      <p class="section-label">Quem somos</p>
+      <h2 class="section-title">Uma escola que<br><em>acredita</em> em você</h2>
+      <p class="section-sub" style="margin-bottom:2rem;font-family:'Lora',serif;font-size:1.1rem;font-style:italic;line-height:1.8;color:rgba(245,239,228,0.85);">NOMA nasceu da crença de que todo mundo tem um caminho único para a fluência. Não existe o método certo, existe o método certo <em style="color:var(--gold-light);font-style:normal;">para você.</em></p>
+      <p class="section-sub" style="margin-bottom:2rem;font-family:'Lora',serif;font-size:1.05rem;"><em style="color:var(--gold-light);font-style:italic;font-weight:500;">Missão</em><span style="color:rgba(245,239,228,0.4);margin:0 0.5rem;">·</span>Oferecer um ensino que valorize o ritmo individual, tornando-se acolhedor, leve e significativo.</p>
+      <p class="section-sub" style="margin-bottom:2rem;font-family:'Lora',serif;font-size:1.05rem;"><em style="color:var(--gold-light);font-style:italic;font-weight:500;">Objetivo</em><span style="color:rgba(245,239,228,0.4);margin:0 0.5rem;">·</span>Inspirar novas formas de aprender, colocando o aluno como protagonista da sua jornada.</p>
+      <p class="section-sub" style="font-family:'Lora',serif;font-size:1.05rem;"><em style="color:var(--gold-light);font-style:italic;font-weight:500;">Valores</em><span style="color:rgba(245,239,228,0.4);margin:0 0.5rem;">·</span>Acreditamos que o aprendizado não é linear, e que cada manobra é válida quando faz sentido para quem aprende.</p>
+    </div>
+    <div class="about-cards fade-in">
+      <div class="about-card"><h3>✦ Acolhimento</h3><p>Um lugar onde errar faz parte do processo. Aqui você se sente seguro para tentar.</p></div>
+      <div class="about-card"><h3>✦ Leveza</h3><p>Aprender pode ser divertido. Cada aula é uma nova aventura com propósito.</p></div>
+      <div class="about-card"><h3>✦ Autenticidade</h3><p>Seu jeito de aprender é único. Respeitamos e valorizamos cada trajetória.</p></div>
+      <div class="about-card"><h3>✦ Progresso Real</h3><p>Resultados concretos, na prática. Inglês que serve para a vida real.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- VALORES / ESSÊNCIA -->
+<section class="valores" id="valores">
+  <div class="valores-inner">
+    <div class="valores-header fade-in">
+      <p class="section-label">Nossa essência</p>
+      <h2 class="section-title">O que nos<br><em>move todo dia</em></h2>
+      <p class="section-sub">Cada escolha que fazemos, do material ao método, é guiada por esses princípios.</p>
+    </div>
+    <div class="valores-grid">
+      <div class="valor-card fade-in">
+        <svg class="valor-icon" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="rgba(74,94,58,0.1)"/><path d="M22 12 L24 19H31L25.5 23.5L27.5 30.5L22 26L16.5 30.5L18.5 23.5L13 19H20Z" fill="#4A5E3A"/></svg>
+        <h3>Confiança</h3><p>Criamos um ambiente onde você se sente seguro para experimentar, errar e crescer.</p>
+      </div>
+      <div class="valor-card fade-in">
+        <svg class="valor-icon" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="rgba(200,136,26,0.1)"/><path d="M14 28 Q18 16 22 20 Q26 24 30 14" stroke="#C8881A" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="30" cy="14" r="2.5" fill="#C8881A"/></svg>
+        <h3>Evolução</h3><p>Acreditamos que toda pessoa tem potencial. Nosso papel é ajudar você a desbloqueá-lo.</p>
+      </div>
+      <div class="valor-card fade-in">
+        <svg class="valor-icon" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="rgba(74,94,58,0.1)"/><path d="M16 22 Q22 14 28 22 Q22 30 16 22Z" fill="#4A5E3A" opacity="0.8"/></svg>
+        <h3>Curiosidade</h3><p>A melhor forma de aprender é com vontade de descobrir. Mantemos a chama acesa.</p>
+      </div>
+      <div class="valor-card fade-in">
+        <svg class="valor-icon" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="rgba(200,136,26,0.1)"/><circle cx="22" cy="18" r="5" fill="#C8881A" opacity="0.8"/><path d="M12 32 Q14 26 22 26 Q30 26 32 32" stroke="#C8881A" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+        <h3>Humanidade</h3><p>Cada aluno é uma pessoa com uma história. Ensinamos para gente, não para números.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TURMAS + ESTILOS + MÉTODOS -->
+<section class="turmas" id="turmas">
+  <div class="turmas-pattern"><img src="IMAGEM_BASE64" alt=""></div>
+  <div class="turmas-inner">
+    <div class="turmas-header fade-in">
+      <p class="section-label">Para cada momento da vida</p>
+      <h2 class="section-title">Encontre sua <em>turma</em></h2>
+      <p class="section-sub" style="margin:0 auto">Cada faixa etária tem seu próprio ritmo, vocabulário e forma de aprender. Por isso, criamos experiências feitas para cada fase.</p>
+    </div>
+    <div class="turmas-cards">
+      <div class="turma-card sprouts fade-in">
+        <span class="turma-badge">NOMA Sprouts</span>
+        <h3>Pequenos exploradores</h3>
+        <span class="turma-age">Para crianças de 8 a 11 anos</span>
+        <p>Aprendizado lúdico com brincadeiras, músicas e histórias. As crianças aprendem sem perceber e adoram cada momento.</p>
+      </div>
+      <div class="turma-card explorers fade-in">
+        <span class="turma-badge">NOMA Buds</span>
+        <h3>Cultura, tecnologia e mundo</h3>
+        <span class="turma-age">Para jovens de 12 a 17 anos</span>
+        <p>Inglês conectado com cultura, tecnologia e tudo que move essa geração. Para quem está descobrindo o mundo.</p>
+      </div>
+      <div class="turma-card voyagers fade-in">
+        <span class="turma-badge">NOMA Bloom</span>
+        <h3>Trabalho, viagens e relacionamentos</h3>
+        <span class="turma-age">Para adultos a partir de 18 anos</span>
+        <p>Inglês para quem vive intensamente: trabalho, viagens, relacionamentos. Com a seriedade que você precisa e a leveza que merece.</p>
+      </div>
+    </div>
+
+    <!-- ESTILOS -->
+    <div id="estilos" style="margin-top:4rem;max-width:900px;margin-left:auto;margin-right:auto">
+      <div style="text-align:center;margin-bottom:2rem">
+        <p class="section-label">Estilos de ensino</p>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:600;color:var(--green-dark)">Como a gente <em style="color:var(--gold)">ensina</em></h3>
+      </div>
+      <div class="estilos-grid">
+        <div id="flow" style="background:white;border-radius:20px;padding:2rem;border:1px solid rgba(74,94,58,0.12);border-top:4px solid var(--gold)">
+          <div style="display:inline-block;background:rgba(200,136,26,0.1);color:#8B5E0A;border-radius:100px;padding:0.25rem 0.9rem;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem">✈ Flow</div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--green-dark);margin-bottom:0.6rem">Comunicação em primeiro lugar</h4>
+          <p style="font-size:0.875rem;color:var(--text-muted);line-height:1.7;margin-bottom:1rem">No Flow, a conversa não espera. Cada aula tem um tema novo, vocabulário em contexto real e muita prática oral. O objetivo é você ganhar confiança para se comunicar de verdade, sem travar.</p>
+          <div style="display:flex;flex-direction:column;gap:0.4rem">
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Temas do seu mundo</span>
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Vocabulário por contexto</span>
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Conversação desde o primeiro dia</span>
+          </div>
+        </div>
+        <div id="roots" style="background:white;border-radius:20px;padding:2rem;border:1px solid rgba(74,94,58,0.12);border-top:4px solid var(--green)">
+          <div style="display:inline-block;background:rgba(74,94,58,0.1);color:var(--green-dark);border-radius:100px;padding:0.25rem 0.9rem;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem">🌱 Roots</div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--green-dark);margin-bottom:0.6rem">Estrutura que sustenta tudo</h4>
+          <p style="font-size:0.875rem;color:var(--text-muted);line-height:1.7;margin-bottom:1rem">No Roots, você entende o inglês por dentro. A gramática deixa de ser decoreba e vira ferramenta. Cada aula constrói uma base sólida para que você leia, escreva e fale com precisão.</p>
+          <div style="display:flex;flex-direction:column;gap:0.4rem">
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Gramática aplicada, não decorada</span>
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Estrutura para ler e escrever melhor</span>
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Base para fluência duradoura</span>
+          </div>
+        </div>
+      </div>
+      <div id="bee" style="background:white;border-radius:20px;padding:2rem;border:1px solid rgba(74,94,58,0.12);border-top:4px solid #C8881A;margin-top:1.5rem">
+        <div style="display:inline-block;background:rgba(200,160,20,0.1);color:#7A5C00;border-radius:100px;padding:0.25rem 0.9rem;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem">🐝 Bee</div>
+        <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--green-dark);margin-bottom:0.6rem">Reforço escolar com propósito</h4>
+        <p style="font-size:0.875rem;color:var(--text-muted);line-height:1.7;margin-bottom:1rem">O Bee é para quem precisa de apoio com o inglês do colégio, mas sem a pressão de decorar regra. A gente pega o conteúdo da escola e transforma em algo que faz sentido de verdade, com conversação, contexto e leveza.</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem">
+          <span style="font-size:0.8rem;color:var(--green-dark)">✦ Conteúdo escolar com contexto real</span>
+          <span style="font-size:0.8rem;color:var(--green-dark)">✦ Gramática sem decoreba</span>
+          <span style="font-size:0.8rem;color:var(--green-dark)">✦ Preparação para provas e vestibular</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÉTODOS -->
+    <div style="margin-top:3rem;max-width:900px;margin-left:auto;margin-right:auto">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <p class="section-label">Métodos</p>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:600;color:var(--green-dark)">Como cada aula <em style="color:var(--gold)">acontece</em></h3>
+      </div>
+      <div class="estilos-grid">
+        <div id="quest" style="background:white;border-radius:20px;padding:2rem;border:1px solid rgba(74,94,58,0.12);border-top:4px solid var(--gold)">
+          <div style="display:inline-block;background:rgba(200,136,26,0.1);color:#8B5E0A;border-radius:100px;padding:0.25rem 0.9rem;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem">✦ Quest</div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--green-dark);margin-bottom:0.6rem">Um tema novo a cada aula</h4>
+          <p style="font-size:0.875rem;color:var(--text-muted);line-height:1.7;margin-bottom:1rem">No Quest, cada aula começa com um tema do seu universo. A conversa acontece desde o primeiro minuto, o vocabulário entra pelo contexto e a fluência vem pela prática constante.</p>
+          <div style="display:flex;flex-direction:column;gap:0.4rem">
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Conversação ao vivo</span>
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Vocabulário por contexto</span>
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Temas que você escolhe</span>
+          </div>
+        </div>
+        <div id="level" style="background:white;border-radius:20px;padding:2rem;border:1px solid rgba(74,94,58,0.12);border-top:4px solid var(--green)">
+          <div style="display:inline-block;background:rgba(74,94,58,0.1);color:var(--green-dark);border-radius:100px;padding:0.25rem 0.9rem;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem">✦ Level</div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--green-dark);margin-bottom:0.6rem">Aprenda como num jogo</h4>
+          <p style="font-size:0.875rem;color:var(--text-muted);line-height:1.7;margin-bottom:1rem">No Level, cada aula tem desafios, pontuações e metas. A sensação de avançar de fase mantém a motivação alta. O conteúdo tem temas mas o formato é gamificado do começo ao fim.</p>
+          <div style="display:flex;flex-direction:column;gap:0.4rem">
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Desafios e conquistas</span>
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Motivação constante</span>
+            <span style="font-size:0.8rem;color:var(--green-dark)">✦ Aprender sem parecer aula</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AULA EXPERIMENTAL -->
+<section id="experimental" style="background:var(--green-dark);padding:5rem 2.5rem;position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;opacity:0.07;pointer-events:none"><img src="IMAGEM_BASE64" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+  <div style="max-width:900px;margin:0 auto;position:relative;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center" class="exp-grid">
+    <div class="fade-in">
+      <p class="section-label" style="color:var(--gold-light)">Antes de qualquer compromisso</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:600;color:var(--cream);line-height:1.15;margin-bottom:1.25rem">A primeira aula<br><em style="color:var(--gold-light)">é por nossa conta.</em></h2>
+      <p style="font-size:1rem;color:rgba(245,239,228,0.75);line-height:1.75;margin-bottom:2rem">A gente acredita que a conexão vem antes do contrato. Por isso, antes de qualquer pacote, fazemos uma aula experimental juntos, sem custo e sem pressão.</p>
+      <a href="https://wa.me/5515988137161?text=Hi%20Teacher%20Juli!%20Quero%20agendar%20minha%20aula%20experimental" target="_blank" class="btn-primary">Agendar aula experimental</a>
+    </div>
+    <div class="fade-in">
+      <div style="background:rgba(245,239,228,0.07);border:1px solid rgba(245,239,228,0.15);border-radius:20px;padding:2rem">
+        <div style="display:flex;flex-direction:column;gap:1.25rem">
+          <div style="display:flex;gap:1rem;align-items:flex-start"><span style="font-size:1.4rem;color:var(--gold-light)">✦</span><div><p style="font-weight:600;color:var(--cream);margin-bottom:0.2rem;font-size:0.95rem">Nos conhecemos</p><p style="font-size:0.85rem;color:rgba(245,239,228,0.6);line-height:1.6">A gente entende seu ritmo, seus objetivos e o que faz sentido pra você nesse momento.</p></div></div>
+          <div style="display:flex;gap:1rem;align-items:flex-start"><span style="font-size:1.4rem;color:var(--gold-light)">✦</span><div><p style="font-weight:600;color:var(--cream);margin-bottom:0.2rem;font-size:0.95rem">Descobrimos seus temas</p><p style="font-size:0.85rem;color:rgba(245,239,228,0.6);line-height:1.6">Futebol, séries, negócios, viagens? A aula já começa com o que te move de verdade.</p></div></div>
+          <div style="display:flex;gap:1rem;align-items:flex-start"><span style="font-size:1.4rem;color:var(--gold-light)">✦</span><div><p style="font-weight:600;color:var(--cream);margin-bottom:0.2rem;font-size:0.95rem">Você decide sem pressão</p><p style="font-size:0.85rem;color:rgba(245,239,228,0.6);line-height:1.6">Depois da aula, se fizer sentido pra você, a gente combina o pacote ideal.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANOS -->
+<section class="valores" id="pacotes" style="background:#f9f4ec">
+  <div class="valores-inner">
+    <div class="valores-header fade-in" style="text-align:center;margin-bottom:3rem">
+      <p class="section-label">Investimento</p>
+      <h2 class="section-title">Escolha seu <em>plano</em></h2>
+      <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(74,94,58,0.12);border:1px solid rgba(74,94,58,0.2);border-radius:100px;padding:0.4rem 1.1rem;margin-bottom:1rem">
+        <span style="font-size:0.8rem;color:var(--green-dark);font-weight:600">⏱ Nossas aulas têm 1h30 de duração</span>
+      </div>
+      <p class="section-sub" style="margin:0 auto">Você escolhe a frequência e o compromisso que cabe na sua vida. Conversamos sobre o investimento de forma personalizada.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem" class="fade-in pacotes-grid">
+      <!-- LIGHT -->
+      <div style="background:white;border-radius:24px;padding:2.5rem 2rem;border:1px solid rgba(74,94,58,0.12)">
+        <div style="display:inline-block;background:rgba(74,94,58,0.1);color:var(--green-dark);border-radius:100px;padding:0.3rem 1rem;font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.25rem">✈ Light</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--green-dark);margin-bottom:0.5rem">1x por semana</h3>
+        <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6">Ideal para quem quer consistência sem pressão. Uma aula por semana para ir construindo com calma.</p>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(74,94,58,0.08)"><span style="font-size:0.875rem;color:var(--text-muted)">Light <span style="opacity:.55;font-size:.78rem">(mensal)</span></span><span style="font-size:.875rem;font-weight:500;color:var(--green-dark)">sob consulta</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(74,94,58,0.08)"><span style="font-size:0.875rem;color:var(--text-muted)">Light+ <span style="opacity:.55;font-size:.78rem">(trimestral)</span></span><span style="font-size:.875rem;font-weight:500;color:var(--green-dark)">sob consulta</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(74,94,58,0.08)"><span style="font-size:0.875rem;color:var(--text-muted)">Light++ <span style="opacity:.55;font-size:.78rem">(semestral)</span></span><span style="font-size:.875rem;font-weight:500;color:var(--green-dark)">sob consulta</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0"><span style="font-size:0.875rem;color:var(--gold)">Light ✦ <span style="opacity:.7;font-size:.78rem">(anual)</span></span><span style="font-size:.875rem;font-weight:500;color:var(--gold)">melhor condição</span></div>
+        </div>
+      </div>
+      <!-- FULL -->
+      <div style="background:var(--green-dark);border-radius:24px;padding:2.5rem 2rem">
+        <div style="display:inline-block;background:rgba(245,239,228,0.15);color:var(--gold-light);border-radius:100px;padding:0.3rem 1rem;font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.25rem">✦ Full</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--cream);margin-bottom:0.5rem">2x por semana</h3>
+        <p style="font-size:0.9rem;color:rgba(245,239,228,.7);margin-bottom:1.5rem;line-height:1.6">Para quem quer acelerar com mais imersão. Duas aulas por semana para evoluir mais rápido.</p>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(245,239,228,.1)"><span style="font-size:.875rem;color:rgba(245,239,228,.6)">Full <span style="opacity:.55;font-size:.78rem">(mensal)</span></span><span style="font-size:.875rem;font-weight:500;color:var(--cream)">sob consulta</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(245,239,228,.1)"><span style="font-size:.875rem;color:rgba(245,239,228,.6)">Full+ <span style="opacity:.55;font-size:.78rem">(trimestral)</span></span><span style="font-size:.875rem;font-weight:500;color:var(--cream)">sob consulta</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(245,239,228,.1)"><span style="font-size:.875rem;color:rgba(245,239,228,.6)">Full++ <span style="opacity:.55;font-size:.78rem">(semestral)</span></span><span style="font-size:.875rem;font-weight:500;color:var(--cream)">sob consulta</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0"><span style="font-size:.875rem;color:var(--gold-light)">Full ✦ <span style="opacity:.7;font-size:.78rem">(anual)</span></span><span style="font-size:.875rem;font-weight:500;color:var(--gold-light)">melhor condição</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2rem" class="fade-in">
+      <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1.25rem">Faça o quiz e descubra qual combinação faz mais sentido pra você. Depois é só a gente conversar.</p>
+      <a href="#quiz" class="btn-primary">Descobrir meu perfil</a>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="quiz-section" id="quiz">
+  <div class="quiz-section-pattern"><img src="IMAGEM_BASE64" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+  <div class="quiz-inner">
+    <p class="section-label">Queremos te conhecer melhor</p>
+    <h2 class="section-title" style="color:var(--cream)">Vamos descobrir seu<br><em>caminho ideal?</em></h2>
+    <p style="font-size:1rem;color:rgba(245,239,228,0.65);line-height:1.7;max-width:480px;margin:0 auto 2.5rem">Sem respostas certas ou erradas.</p>
+    <div id="quiz-container">
+      <div class="quiz-progress" id="quiz-progress"></div>
+      <h3 id="quiz-titulo" style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--cream);margin-bottom:1.5rem;line-height:1.3;min-height:3rem"></h3>
+      <div id="quiz-opcoes" style="display:flex;flex-direction:column;gap:0.75rem;min-height:50px"></div>
+      <p id="topics-hint" style="font-size:0.8rem;color:rgba(245,239,228,0.5);margin:0.75rem 0 0;text-align:center;min-height:1.2em"></p>
+      <div id="quiz-contato" style="display:none;flex-direction:column;gap:0.85rem;margin-top:0.5rem">
+        <input id="quiz-name" type="text" placeholder="Seu nome completo (mínimo dois nomes)" autocomplete="name" style="background:rgba(245,239,228,0.08);border:1.5px solid rgba(245,239,228,0.2);border-radius:14px;padding:1rem 1.25rem;color:var(--cream);font-size:0.95rem;outline:none;width:100%;font-family:'DM Sans',sans-serif">
+        <p id="name-hint" style="font-size:0.75rem;color:rgba(229,168,42,0.8);display:none;margin-top:-0.5rem">Informe nome e sobrenome.</p>
+        <input id="quiz-email" type="email" placeholder="Seu e-mail (opcional)" autocomplete="email" style="background:rgba(245,239,228,0.08);border:1.5px solid rgba(245,239,228,0.2);border-radius:14px;padding:1rem 1.25rem;color:var(--cream);font-size:0.95rem;outline:none;width:100%;font-family:'DM Sans',sans-serif">
+        <input id="quiz-phone" type="tel" placeholder="WhatsApp (opcional)" autocomplete="tel" style="background:rgba(245,239,228,0.08);border:1.5px solid rgba(245,239,228,0.2);border-radius:14px;padding:1rem 1.25rem;color:var(--cream);font-size:0.95rem;outline:none;width:100%;font-family:'DM Sans',sans-serif">
+        <label id="quiz-lgpd-label" style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;padding:0.5rem 0">
+          <input id="quiz-lgpd" type="checkbox" style="margin-top:3px;accent-color:#C8881A;width:16px;height:16px;flex-shrink:0">
+          <span style="font-size:0.76rem;color:rgba(245,239,228,0.55);line-height:1.6">Concordo que a NOMA armazene meu nome, e-mail e respostas para entrar em contato e personalizar minha experiência. <a href="#politica-privacidade" style="color:#C8881A">Ver política de privacidade.</a></span>
+        </label>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" id="quiz-back" onclick="qVoltar()" style="visibility:hidden">← Voltar</button>
+        <button class="quiz-btn-next" id="quiz-next" onclick="qProximo()">Próxima →</button>
+      </div>
+    </div>
+    <div id="quiz-result" style="display:none;text-align:center">
+      <div class="result-card" id="result-content"></div>
+      <button onclick="qReiniciar()" style="margin-top:1.5rem;background:transparent;border:1.5px solid rgba(245,239,228,0.3);color:rgba(245,239,228,0.7);padding:0.7rem 2rem;border-radius:100px;cursor:pointer;font-size:0.875rem;font-family:'DM Sans',sans-serif">Refazer o quiz</button>
+    </div>
+  </div>
+</section>
+
+<!-- AREA DO ALUNO -->
+<section id="area-aluno" style="background:#f9f4ec;padding:4rem 1.5rem">
+  <div style="max-width:900px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <p class="section-label">Área do Aluno</p>
+      <h2 class="section-title" style="color:var(--green-dark)">Agende sua <em>aula online</em></h2>
+      <p class="section-sub" style="margin:0 auto">Escolha o melhor horário para você.</p>
+    </div>
+    <div id="noma-login-box" style="max-width:360px;margin:0 auto;text-align:center">
+      <p style="font-size:.9rem;color:var(--text-muted);margin-bottom:1.5rem">Entre com seus dados de acesso para agendar suas aulas.</p>
+      <input id="noma-login-email" type="text" placeholder="Usuário" autocomplete="username" style="width:100%;padding:10px 14px;border-radius:12px;border:1.5px solid rgba(74,94,58,0.3);font-size:.9rem;background:white;color:var(--green-dark);margin-bottom:.75rem;outline:none;display:block;box-sizing:border-box;font-family:'DM Sans',sans-serif">
+      <input id="noma-login-senha" type="password" placeholder="Senha" style="width:100%;padding:10px 14px;border-radius:12px;border:1.5px solid rgba(74,94,58,0.3);font-size:.9rem;background:white;color:var(--green-dark);margin-bottom:.5rem;outline:none;display:block;box-sizing:border-box;font-family:'DM Sans',sans-serif" onkeydown="if(event.key==='Enter')nomaLogin()">
+      <p id="noma-login-erro" style="font-size:.8rem;color:#c0392b;margin-bottom:.75rem;display:none">E-mail ou senha incorretos.</p>
+      <button onclick="nomaLogin()" style="width:100%;padding:12px;background:var(--green);color:var(--cream);border:none;border-radius:100px;font-size:.95rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif">Entrar</button>
+      <p style="font-size:.72rem;color:var(--text-muted);margin-top:.75rem;line-height:1.6;text-align:center">Ao entrar, você concorda com a <a href="#politica-privacidade" style="color:var(--green)">política de privacidade da NOMA</a>.</p>
+    </div>
+    <div id="noma-painel" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem">
+        <p id="noma-ola" style="font-size:.95rem;color:var(--green-dark);font-weight:500"></p>
+        <button onclick="nomaSair()" style="padding:6px 16px;border-radius:100px;border:1.5px solid var(--green);background:transparent;color:var(--green-dark);font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif">Sair</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap">
+        <button onclick="nomaTab('agendar',this)" id="tab-agendar" style="padding:8px 20px;border-radius:100px;border:1.5px solid var(--green);background:var(--green);color:var(--cream);font-size:.85rem;cursor:pointer;font-family:'DM Sans',sans-serif">Agendar aula</button>
+        <button onclick="nomaTab('minhas',this)" id="tab-minhas" style="padding:8px 20px;border-radius:100px;border:1.5px solid var(--green);background:transparent;color:var(--green-dark);font-size:.85rem;cursor:pointer;font-family:'DM Sans',sans-serif">Minhas aulas</button>
+      </div>
+      <div id="noma-view-agendar">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+          <p style="font-size:1rem;font-weight:500;color:var(--green-dark)" id="noma-week-label"></p>
+          <div style="display:flex;gap:6px">
+            <button onclick="nomaWeek(-1)" style="padding:6px 14px;border-radius:100px;border:1.5px solid var(--green);background:transparent;color:var(--green-dark);font-size:.85rem;cursor:pointer;font-family:'DM Sans',sans-serif">&#8592; Anterior</button>
+            <button onclick="nomaWeek(1)" style="padding:6px 14px;border-radius:100px;border:1.5px solid var(--green);background:transparent;color:var(--green-dark);font-size:.85rem;cursor:pointer;font-family:'DM Sans',sans-serif">Próxima &#8594;</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto"><div id="noma-grid" style="min-width:500px"></div></div>
+        <div style="display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--text-muted)"><div style="width:12px;height:12px;border-radius:3px;background:#C0DD97"></div>Disponível</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--text-muted)"><div style="width:12px;height:12px;border-radius:3px;background:var(--green-dark)"></div>Minha aula</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--text-muted)"><div style="width:12px;height:12px;border-radius:3px;background:#e8e4dc;border:1px solid #ccc"></div>Ocupado</div>
+        </div>
+      </div>
+      <div id="noma-view-minhas" style="display:none"><div id="noma-minhas-list"></div></div>
+    </div>
+  </div>
+</section>
+
+<div id="noma-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)nomaCloseModal()">
+  <div style="background:var(--cream);border-radius:20px;padding:2rem;width:90%;max-width:360px">
+    <p style="font-size:1.1rem;font-weight:600;color:var(--green-dark);font-family:'Cormorant Garamond',serif;margin-bottom:.25rem" id="noma-modal-title"></p>
+    <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:1.25rem">Aula online · 1h30 de duração</p>
+    <button onclick="nomaConfirm()" style="width:100%;padding:12px;background:var(--green);color:var(--cream);border:none;border-radius:100px;font-size:.95rem;font-weight:500;cursor:pointer;margin-bottom:8px;font-family:'DM Sans',sans-serif">Confirmar agendamento</button>
+    <button onclick="nomaCloseModal()" style="width:100%;padding:10px;background:transparent;color:var(--text-muted);border:1.5px solid rgba(74,94,58,.2);border-radius:100px;font-size:.875rem;cursor:pointer;font-family:'DM Sans',sans-serif">Cancelar</button>
+  </div>
+</div>
+
+<!-- BOOK MODAL -->
+<div id="book-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)closeBk()">
+  <div style="background:var(--cream);border-radius:20px;padding:2rem;width:90%;max-width:360px">
+    <p style="font-size:1.1rem;font-weight:600;color:var(--green-dark);font-family:'Cormorant Garamond',serif;margin-bottom:0.25rem">Confirmar agendamento</p>
+    <p id="bk-sub" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem">Aula online · 1h30 de duração</p>
+    <button onclick="confirmBk()" style="width:100%;padding:12px;background:var(--green);color:var(--cream);border:none;border-radius:100px;font-size:0.95rem;font-weight:500;cursor:pointer;margin-bottom:8px;font-family:'DM Sans',sans-serif">Confirmar</button>
+    <button onclick="closeBk()" style="width:100%;padding:10px;background:transparent;color:var(--text-muted);border:1.5px solid rgba(74,94,58,0.2);border-radius:100px;font-size:0.875rem;cursor:pointer;font-family:'DM Sans',sans-serif">Cancelar</button>
+  </div>
+</div>
+
+<!-- TEACHER JULI / ABOUT ME -->
+<section id="teacher-juli" style="background:var(--cream);padding:5rem 1.5rem">
+  <div style="max-width:860px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:3.5rem">
+      <p class="section-label" style="color:var(--green)">About me</p>
+      <h2 class="section-title" style="color:var(--green-dark)">Uma trajetória que<br><em>não foi em linha reta</em></h2>
+    </div>
+
+    <!-- Sobre mim: selfie à esquerda, texto à direita -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-bottom:4.5rem" class="about-inner">
+      <div style="display:flex;justify-content:center">
+        <div style="border-radius:999px;overflow:hidden;width:260px;height:340px;box-shadow:0 12px 50px rgba(74,94,58,0.2)">
+          <img src="IMAGEM_BASE64" alt="Teacher Juli" style="width:100%;height:100%;object-fit:cover;object-position:center top">
+        </div>
+      </div>
+      <div>
+        <p style="font-size:0.75rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:0.75rem">Sobre mim</p>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--green-dark);margin-bottom:1rem">Teacher Juli</h3>
+        <p style="font-family:'Lora',serif;font-size:1.05rem;font-style:italic;color:var(--green-dark);line-height:1.85;margin-bottom:1.25rem">"Por quatro anos, estudei farmácia. Aprendi muito, mas sentia que estava no lugar errado. Sabia só que queria ajudar as pessoas de verdade."</p>
+        <p style="font-size:0.93rem;color:var(--text-muted);line-height:1.8;margin-bottom:1rem">Com 21 anos e sem uma direção clara, me candidatei quase sem querer para uma vaga de professora de inglês. Não esperava que fosse mudar tudo.</p>
+        <p style="font-size:0.93rem;color:var(--text-muted);line-height:1.8">Hoje sou professora de inglês há 2 anos e estudante de Letras na UNIVESP.</p>
+      </div>
+    </div>
+
+    <!-- Por que NOMA: texto à esquerda, foto à direita -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center" class="about-inner">
+      <div>
+        <p style="font-size:0.75rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:0.75rem">Por que NOMA</p>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--green-dark);margin-bottom:1rem">Recalcular a rota</h3>
+        <p style="font-size:0.93rem;color:var(--text-muted);line-height:1.8;margin-bottom:1rem">NOMA vem de nômade. Da necessidade de mudar, de recalcular a rota. Surgiu da percepção de que as escolas são muito engessadas, presas a um livro, sem espaço para o aluno ser quem é.</p>
+        <p style="font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--green-dark);line-height:1.85">"A NOMA nasceu da necessidade de ir mais longe."</p>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <div style="border-radius:24px;overflow:hidden;width:100%;max-width:320px;height:420px;box-shadow:0 12px 50px rgba(74,94,58,0.15)">
+          <img src="IMAGEM_BASE64" alt="Teacher Juli" style="width:100%;height:100%;object-fit:cover">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- POLÍTICA DE PRIVACIDADE -->
+<section id="politica-privacidade" style="background:#f0ece4;padding:3rem 1.5rem">
+  <div style="max-width:760px;margin:0 auto">
+    <button onclick="(function(){var p=document.getElementById('privacidade-conteudo');var btn=document.getElementById('privacidade-btn');var open=p.style.display==='block';p.style.display=open?'none':'block';btn.textContent=open?'Ler política de privacidade ↓':'Fechar ↑';})()" id="privacidade-btn" style="display:inline-flex;align-items:center;gap:8px;background:transparent;border:1.5px solid rgba(74,94,58,0.25);color:var(--green-dark);padding:0.7rem 1.5rem;border-radius:100px;font-size:0.875rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:1.5rem;transition:all .2s">
+      Ler política de privacidade ↓
+    </button>
+    <div id="privacidade-conteudo" style="display:none">
+      <p class="section-label" style="color:var(--green)">LGPD</p>
+      <h2 class="section-title" style="color:var(--green-dark);margin-bottom:2rem">Política de <em>Privacidade</em></h2>
+      <div style="font-size:0.9rem;color:var(--text-muted);line-height:1.9;display:flex;flex-direction:column;gap:1.5rem">
+        <div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--green-dark);margin-bottom:0.5rem">Quem somos</h3><p>A NOMA English School é uma escola virtual de inglês conduzida por Juliana (Teacher Juli). Responsável pelos dados: Teacher Juli — contato via WhatsApp (15) 98813-7161 ou Instagram @learnwith.noma.</p></div>
+        <div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--green-dark);margin-bottom:0.5rem">Quais dados coletamos</h3><p>Coletamos apenas o necessário: <strong style="color:var(--green-dark)">nome completo, e-mail e WhatsApp</strong> (opcional) fornecidos no quiz ou no cadastro da área do aluno. Também armazenamos as respostas do quiz e os horários de aulas agendadas.</p></div>
+        <div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--green-dark);margin-bottom:0.5rem">Para que usamos</h3><p>Os dados são usados exclusivamente para entrar em contato após o quiz, gerenciar agendamentos e personalizar a experiência de ensino. Não vendemos, compartilhamos nem usamos seus dados para publicidade.</p></div>
+        <div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--green-dark);margin-bottom:0.5rem">Por quanto tempo guardamos</h3><p>Respostas do quiz e dados de contato: até <strong style="color:var(--green-dark)">2 anos</strong>. Agendamentos: <strong style="color:var(--green-dark)">6 meses</strong> após a data da aula.</p></div>
+        <div><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--green-dark);margin-bottom:0.5rem">Seus direitos (Lei 13.709/2018)</h3><p>Você tem direito a acessar, corrigir, solicitar exclusão e revogar o consentimento a qualquer momento via WhatsApp ou Instagram.</p></div>
+        <div style="background:rgba(74,94,58,0.08);border-radius:16px;padding:1.25rem 1.5rem"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--green-dark);margin-bottom:0.5rem">Solicitar exclusão dos seus dados</h3><p style="margin-bottom:1rem">Envie uma mensagem com seu nome e e-mail cadastrado.</p><a href="https://wa.me/5515988137161?text=Ola%20Teacher%20Juli,%20gostaria%20de%20solicitar%20a%20exclusao%20dos%20meus%20dados%20da%20NOMA." target="_blank" class="btn-primary" style="font-size:0.875rem;padding:0.75rem 1.5rem">Solicitar exclusão via WhatsApp</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="IMAGEM_BASE64" alt="NOMA" class="footer-logo" style="filter:brightness(0) invert(1);opacity:0.85;height:44px;margin-bottom:0.75rem">
+  <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:rgba(245,239,228,0.85);margin-bottom:0.5rem"><span class="gold">NOMA — Own your path.</span></p>
+  <p style="font-size:0.85rem;color:rgba(245,239,228,0.5);margin-bottom:1.25rem;line-height:1.6">By Teacher Juli · Escola virtual de inglês · Aprendizado com propósito, leveza e autenticidade.</p>
+  <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap">
+    <a href="https://www.instagram.com/learnwith.noma" target="_blank" style="color:rgba(245,239,228,0.5);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.5rem;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(245,239,228,0.5)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>@learnwith.noma</a>
+    <a href="https://www.tiktok.com/@learnwith.noma" target="_blank" style="color:rgba(245,239,228,0.5);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.5rem;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(245,239,228,0.5)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>@learnwith.noma</a>
+    <a href="https://wa.me/5515988137161?text=Hi%20Teacher%20Juli!" target="_blank" style="color:rgba(245,239,228,0.5);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.5rem;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(245,239,228,0.5)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.558 4.126 1.532 5.858L0 24l6.335-1.652A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.37l-.36-.214-3.728.972.994-3.634-.235-.374A9.818 9.818 0 1 1 12 21.818z"/></svg>WhatsApp</a>
+  </div>
+  <p style="font-size:0.72rem;color:rgba(245,239,228,0.2)">© 2025 NOMA English School · <a href="#politica-privacidade" style="color:rgba(245,239,228,0.3);text-decoration:none">Política de Privacidade</a></p>
+</footer>
+
+<!-- ADMIN TRIGGER -->
+<div style="text-align:center;padding:1rem;background:var(--green-dark)">
+  <span id="admin-secret" onclick="adminSecretClick()" style="font-size:0.65rem;color:rgba(245,239,228,0.15);cursor:default;user-select:none;letter-spacing:0.05em">NOMA © 2025</span>
+  <div id="admin-pwd-bar" style="display:none;align-items:center;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-top:0.5rem">
+    <input id="admin-pwd-input" type="password" placeholder="Senha admin" style="padding:0.4rem 0.75rem;border-radius:100px;border:1px solid rgba(245,239,228,0.3);background:transparent;color:rgba(245,239,228,0.8);font-size:0.75rem;outline:none;width:140px;font-family:'DM Sans',sans-serif" onkeydown="if(event.key==='Enter')adminEntrar()">
+    <button onclick="adminEntrar()" style="background:rgba(245,239,228,0.1);border:1px solid rgba(245,239,228,0.3);color:rgba(245,239,228,0.7);padding:0.4rem 1rem;border-radius:100px;font-size:0.7rem;cursor:pointer;font-family:'DM Sans',sans-serif">Entrar</button>
+    <button onclick="document.getElementById('admin-pwd-bar').style.display='none'" style="background:transparent;border:none;color:rgba(245,239,228,0.3);font-size:0.7rem;cursor:pointer">×</button>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div id="admin-panel" class="adm-modal-wrap">
+  <div class="adm-box">
+    <div class="adm-head">
+      <h2>Painel Admin — NOMA</h2>
+      <div style="display:flex;gap:0.5rem">
+        <button class="adm-export" onclick="exportarCSV()">Exportar CSV</button>
+        <button onclick="document.getElementById('admin-panel').classList.remove('on')" style="background:transparent;border:1px solid rgba(245,239,228,.3);color:rgba(245,239,228,.7);padding:0.45rem 1rem;border-radius:100px;font-size:0.78rem;cursor:pointer;font-family:'DM Sans',sans-serif">Fechar ×</button>
+      </div>
+    </div>
+    <div class="adm-tabs">
+      <button id="aba-alunos" class="adm-tab on" onclick="adminAba('alunos',this)">Alunos</button>
+      <button id="aba-agendamentos" class="adm-tab" onclick="adminAba('agend',this)">Agendamentos</button>
+      <button id="aba-quiz" class="adm-tab" onclick="adminAba('quiz',this)">Quiz</button>
+    </div>
+    <div id="admin-tab-alunos" class="adm-panel on">
+      <p style="color:rgba(245,239,228,.5);font-size:0.78rem;margin-bottom:1rem">Gerencie os acessos da área do aluno.</p>
+      <div id="admin-alunos-list" style="margin-bottom:1.25rem"></div>
+      <div class="adm-form">
+        <input type="text" id="admin-novo-email" placeholder="Usuário (ex: joao.silva)">
+        <input type="text" id="admin-novo-senha" placeholder="Senha">
+        <select id="admin-novo-plano">
+          <option value="light">Light (1x/sem)</option>
+          <option value="light+">Light+ (trim)</option>
+          <option value="light++">Light++ (sem)</option>
+          <option value="lightstar">Light ✦ (anual)</option>
+          <option value="full">Full (2x/sem)</option>
+          <option value="full+">Full+ (trim)</option>
+          <option value="full++">Full++ (sem)</option>
+          <option value="fullstar">Full ✦ (anual)</option>
+          <option value="bee">Bee</option>
+          <option value="admin">Admin</option>
+        </select>
+        <input type="date" id="admin-novo-inicio" placeholder="Início" title="Data de início do contrato" style="background:rgba(245,239,228,.08);border:1px solid rgba(245,239,228,.2);border-radius:10px;padding:.5rem .9rem;color:#F5EFE4;font-size:.8rem;outline:none;min-width:130px;color-scheme:dark">
+        <input type="date" id="admin-novo-fim" placeholder="Fim" title="Data fim (calculado automaticamente se deixar vazio)" style="background:rgba(245,239,228,.08);border:1px solid rgba(245,239,228,.2);border-radius:10px;padding:.5rem .9rem;color:#F5EFE4;font-size:.8rem;outline:none;min-width:130px;color-scheme:dark">
+        <button class="adm-add" onclick="adminAdicionarAluno()">Adicionar</button>
+      </div>
+      <p style="font-size:.72rem;color:rgba(245,239,228,.4);margin-top:.5rem">Dica: deixe o fim em branco para calcular automaticamente pelo plano. Ex: Light mensal = 4 aulas pulando feriados.</p>
+      <p id="adm-add-msg" style="font-size:0.8rem;color:var(--gold-light);margin-top:0.5rem;min-height:1.2em"></p>
+    </div>
+    <div id="admin-tab-agendamentos" class="adm-panel" style="display:none">
+      <p style="color:rgba(245,239,228,.5);font-size:0.78rem;margin-bottom:1rem">Todas as aulas agendadas.</p>
+      <div id="admin-agendamentos"></div>
+    </div>
+    <div id="admin-tab-quiz" class="adm-panel" style="display:none">
+      <p style="color:rgba(245,239,228,.5);font-size:0.78rem;margin-bottom:1rem">Respostas do quiz salvas no Supabase.</p>
+      <div id="admin-content"></div>
+    </div>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script src="admin.js"></script>
+<script src="quiz.js"></script>
+<script src="agendamento.js"></script>
+</body>
+</html>

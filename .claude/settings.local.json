@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"d:\\\\repos\\\\learning-with-noma\" -Recurse -Force | Select-Object FullName | ForEach-Object { $_.FullName })",
+      "Bash(Get-ChildItem -Path \"d:\\\\repos\\\\learning-with-noma\" -File)",
+      "Bash(Select-Object Name)",
+      "PowerShell(ls d:\\\\repos\\\\learning-with-noma | Where-Object { -not $_.PSIsContainer } | ForEach-Object { $_.Name })",
+      "Bash(mkdir \"d:\\\\repos\\\\learning-with-noma\\\\backend\")",
+      "Bash(mkdir \"d:\\\\repos\\\\learning-with-noma\\\\backend\\\\app\")",
+      "Bash(mkdir \"d:\\\\repos\\\\learning-with-noma\\\\backend\\\\app\\\\routers\")",
+      "Bash(mkdir \"d:\\\\repos\\\\learning-with-noma\\\\backend\\\\app\\\\services\")",
+      "Bash(mkdir \"d:\\\\repos\\\\learning-with-noma\\\\backend\\\\alembic\")",
+      "PowerShell(New-Item -ItemType Directory -Path \"d:\\\\repos\\\\learning-with-noma\\\\frontend\\\\public\\\\images\" -Force)"
+    ]
+  }
+}
