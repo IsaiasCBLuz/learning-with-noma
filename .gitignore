@@ -1,14 +1,26 @@
-# Python
-backend/.venv/
-backend/__pycache__/
-backend/**/__pycache__/
-backend/*.pyc
-backend/.env
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
 
-# Node
-frontend/node_modules/
+# Build outputs
 frontend/dist/
+frontend/.vite/
+
+# Environment files (keep .env.example)
+.env
+backend/.env
 frontend/.env
+
+# Alembic cache
+backend/alembic/versions/__pycache__/
+
+# IDE
+.vscode/
+.idea/
 
 # OS
 .DS_Store

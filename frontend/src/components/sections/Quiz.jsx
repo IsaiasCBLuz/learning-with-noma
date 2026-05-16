@@ -1,456 +1,269 @@
-import { useState, useCallback } from 'react'
-import {
-  Box, Typography, Button, TextField, Chip, LinearProgress,
-  Alert, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText,
-} from '@mui/material'
-import { useAuth } from '../../contexts/AuthContext'
+import { useState } from 'react'
+import SectionLabel from '../ui/SectionLabel'
 import api from '../../api/client'
 
-const QUESTIONS = [
+const WA_URL = 'https://wa.me/5515988137161?text=Hi%20Teacher%20Juli!%20Quero%20agendar%20minha%20aula%20experimental'
+
+const PERGUNTAS = [
   {
-    id: 'age_group',
-    question: 'Qual a sua faixa etária?',
-    options: [
-      { value: 'kids', label: '8 a 11 anos', sub: 'NOMA Sprouts' },
-      { value: 'teens', label: '12 a 17 anos', sub: 'NOMA Buds' },
-      { value: 'adults', label: '18 anos ou mais', sub: 'NOMA Bloom' },
-      { value: 'bee', label: 'Preciso de suporte escolar', sub: 'NOMA Bee' },
+    t: 'Eu tenho...',
+    opts: [
+      ['kids', 'Entre 8 e 11 anos'],
+      ['teens', 'Entre 12 e 17 anos'],
+      ['adults', 'Mais de 18 anos'],
     ],
   },
   {
-    id: 'level',
-    question: 'Como está seu inglês hoje?',
-    options: [
-      { value: 'beginner', label: 'Iniciante', sub: 'Sei quase nada' },
-      { value: 'intermediate', label: 'Intermediário', sub: 'Me viro, mas tô longe do fluente' },
-      { value: 'advanced', label: 'Avançado', sub: 'Falo bem, quero refinar' },
+    t: 'Como você se relaciona com o inglês hoje?',
+    opts: [
+      ['beginner', 'Estou começando do zero ou quase isso'],
+      ['intermediate', 'Já entendo um pouco, mas travo na hora de falar'],
+      ['advanced', 'Já me comunico, mas quero soar mais natural e profissional'],
+      ['bee', 'Preciso de apoio com o conteúdo que já trabalho em outra escola'],
     ],
   },
   {
-    id: 'style',
-    question: 'Como você aprende melhor?',
-    options: [
-      { value: 'talking', label: 'Conversando', sub: 'Quero falar desde a primeira aula' },
-      { value: 'games', label: 'Jogando', sub: 'Desafios e conquistas me motivam' },
-      { value: 'mixed', label: 'Misturado', sub: 'Gosto de variedade' },
+    t: 'Como você aprende melhor?',
+    opts: [
+      ['talking', 'Falando, errando e tentando de novo, na prática mesmo'],
+      ['games', 'Com desafios, jogos e aquela sensação de próximo nível'],
+      ['mixed', 'Gosto de variar'],
     ],
   },
   {
-    id: 'commitment',
-    question: 'Com que frequência quer estudar?',
-    options: [
-      { value: 'feather', label: '1x por semana', sub: 'Levinho, mas consistente' },
-      { value: 'plus', label: '2x por semana', sub: 'Quero acelerar' },
+    t: 'Quanto ao compromisso, o que combina mais com você agora?',
+    opts: [
+      ['feather', 'Quero voltar com o inglês, mas de um jeito leve'],
+      ['plus', 'Estou criando uma rotina e quero consistência'],
+      ['plusplus', 'Quero ver resultado de verdade'],
+      ['annual', 'Dessa vez eu quero ir até o fim'],
     ],
   },
   {
-    id: 'topics',
-    question: 'Quais temas te interessam? (escolha de 3 a 5)',
-    multi: true,
-    options: [
-      { value: 'viagens', label: '✈ Viagens' },
-      { value: 'trabalho', label: '💼 Trabalho' },
-      { value: 'series', label: '📺 Séries & Filmes' },
-      { value: 'musica', label: '🎵 Música' },
-      { value: 'games', label: '🎮 Games' },
-      { value: 'tecnologia', label: '💻 Tecnologia' },
-      { value: 'cultura', label: '🌍 Cultura geral' },
-      { value: 'intercambio', label: '🎓 Intercâmbio' },
-      { value: 'negocios', label: '📊 Negócios' },
-      { value: 'saude', label: '🏥 Saúde' },
-      { value: 'esportes', label: '⚽ Esportes' },
-      { value: 'arte', label: '🎨 Arte & Design' },
-    ],
+    t: 'Que temas te animam mais? Escolha entre 3 e 5.',
+    topics: true,
+    topicList: ['Cultura Pop', 'Futebol', 'Cultura Americana', 'Música', 'Séries e Filmes', 'Viagens', 'Tecnologia', 'Negócios e Carreira', 'Gastronomia', 'Esportes', 'Moda e Estilo', 'Games'],
   },
+  { t: 'Quase lá! Como a gente te encontra?', contato: true },
 ]
 
-const TURMA_MAP = {
-  kids: 'NOMA Sprouts',
-  teens: 'NOMA Buds',
-  adults: 'NOMA Bloom',
-  bee: 'NOMA Bee',
-}
-const ESTILO_MAP = {
-  talking: 'Flow',
-  games: 'Level',
-  mixed: 'Flow',
-}
-const METODO_MAP = {
-  talking: 'Quest',
-  games: 'Level',
-  mixed: 'Quest',
-}
-const PLANO_MAP = {
-  feather: 'Light',
-  plus: 'Full',
-}
-
-const TURMA_DESC = {
-  'NOMA Sprouts': 'Turma para crianças de 8 a 11 anos. Inglês como aventura, com histórias, jogos e descobertas que tornam o aprendizado natural e divertido.',
-  'NOMA Buds': 'Turma para jovens de 12 a 17 anos. Conectamos o inglês com séries, música, cultura e o futuro que eles vão construir.',
-  'NOMA Bloom': 'Turma para adultos (18+). Conversas reais, vocabulário prático e confiança para trabalho, viagens e relacionamentos.',
-  'NOMA Bee': 'Suporte escolar contextualizado. Inglês da escola com significado, sem decoreba.',
-}
-const ESTILO_DESC = {
-  Flow: 'Comunicação em primeiro lugar. Prática oral intensa com situações reais do dia a dia.',
-  Roots: 'Base gramatical sólida. Estrutura para quem quer ler, escrever e falar com precisão.',
-}
-const METODO_DESC = {
-  Quest: 'Novo tema a cada aula. Vocabulário construído por contexto e descoberta — nunca decoreba.',
-  Level: 'Gamificado. Desafios, conquistas e progressão que tornam o aprendizado viciante.',
+function calcResult(resps, topics) {
+  const [tu, level, me, co] = [resps[0], resps[1], resps[2], resps[3]]
+  const isBee = level === 'bee'
+  const turma = tu === 'kids' ? 'NOMA Sprouts' : tu === 'teens' ? 'NOMA Buds' : isBee ? 'NOMA Bee' : 'NOMA Bloom'
+  const emoji = tu === 'kids' ? '🌱' : tu === 'teens' ? '🚀' : isBee ? '🐝' : '✈️'
+  const style = (level === 'intermediate' || level === 'beginner') ? 'Roots' : 'Flow'
+  const method = me === 'games' ? 'Level' : 'Quest'
+  const plan = isBee ? 'Bee' : { feather: 'Light', plus: 'Light+', plusplus: 'Light++', annual: 'Light ✦' }[co] || co
+  const desc = {
+    kids: 'Seu filho vai aprender sem perceber que está estudando. O NOMA Sprouts transforma o inglês em aventura desde cedo.',
+    teens: 'O NOMA Buds é pra quem quer aprender de um jeito que faz sentido com a sua vida.',
+    adults: 'Com o NOMA Bloom, o inglês finalmente encaixa na sua rotina real, trabalho, viagens ou onde você quiser chegar.',
+    bee: 'Com o NOMA Bee, o reforço escolar deixa de ser decoreba. Conteúdo do colégio com a leveza e o contexto que fazem a diferença.',
+  }
+  return { turma, emoji, style, method, plan, desc: isBee ? desc.bee : (desc[tu] || ''), level, me: me || 'quest', co, tu, topics }
 }
 
 export default function Quiz() {
-  const { user } = useAuth()
   const [step, setStep] = useState(0)
-  const [answers, setAnswers] = useState({})
+  const [resps, setResps] = useState({})
   const [topics, setTopics] = useState([])
-  const [contact, setContact] = useState({ name: '', email: '', phone: '' })
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [lgpd, setLgpd] = useState(false)
+  const [nameErr, setNameErr] = useState(false)
+  const [lgpdErr, setLgpdErr] = useState(false)
+  const [topicErr, setTopicErr] = useState(false)
   const [result, setResult] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [emailError, setEmailError] = useState('')
-  const [descDialog, setDescDialog] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
 
-  const totalSteps = QUESTIONS.length + 1
+  const q = PERGUNTAS[step]
+  const total = PERGUNTAS.length
 
-  const handleOption = (questionId, value) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }))
+  function toggleTopic(t) {
+    setTopics(prev => prev.includes(t) ? prev.filter(x => x !== t) : prev.length < 5 ? [...prev, t] : prev)
+    setTopicErr(false)
   }
 
-  const handleTopicToggle = (value) => {
-    setTopics((prev) =>
-      prev.includes(value) ? prev.filter((t) => t !== value) : prev.length < 5 ? [...prev, value] : prev
-    )
+  function selectOpt(val) {
+    setResps(prev => ({ ...prev, [step]: val }))
   }
 
-  const canProceed = () => {
-    const q = QUESTIONS[step]
-    if (!q) return contact.name && contact.email
-    if (q.multi) return topics.length >= 3
-    return !!answers[q.id]
-  }
-
-  const checkEmail = async (email) => {
-    try {
-      const { data } = await api.get(`/users/email-exists?email=${encodeURIComponent(email)}`)
-      return data.exists
-    } catch {
-      return false
-    }
-  }
-
-  const handleNext = async () => {
-    if (step < QUESTIONS.length) {
-      setStep((s) => s + 1)
+  async function next() {
+    if (q.contato) {
+      const parts = name.trim().split(' ').filter(Boolean)
+      if (parts.length < 2) { setNameErr(true); return }
+      if (!lgpd) { setLgpdErr(true); return }
+      const r = calcResult(resps, topics)
+      setSubmitting(true)
+      try {
+        await api.post('/quiz/submit', {
+          name: name.trim(), email: email.trim(), phone: phone.trim(),
+          turma: r.turma, level: resps[1], style: r.style, method: r.method,
+          commitment: resps[3] || 'feather', topics,
+        })
+      } catch { /* silently fail — don't block user */ }
+      setSubmitting(false)
+      setResult({ ...r, firstName: name.trim().split(' ')[0] })
       return
     }
-
-    // Contact step — validate email
-    if (!contact.name || !contact.email) return
-    setLoading(true)
-    setEmailError('')
-    try {
-      const exists = await checkEmail(contact.email)
-      if (exists) {
-        setEmailError('Ei ei ei, você já é meu aluno(a), faça login e solicite uma aula.')
-        setLoading(false)
-        return
-      }
-
-      const turma = TURMA_MAP[answers.age_group] || 'NOMA Bloom'
-      const estilo = answers.level === 'beginner' ? 'Roots' : ESTILO_MAP[answers.style] || 'Flow'
-      const metodo = METODO_MAP[answers.style] || 'Quest'
-      const plano = PLANO_MAP[answers.commitment] || 'Light'
-
-      await api.post('/quiz/', {
-        name: contact.name,
-        email: contact.email,
-        phone: contact.phone || null,
-        age_group: answers.age_group,
-        level: answers.level,
-        style: answers.style,
-        commitment: answers.commitment,
-        topics,
-        result_turma: turma,
-        result_estilo: estilo,
-        result_metodo: metodo,
-        result_plano: plano,
-      })
-
-      setResult({ turma, estilo, metodo, plano })
-    } catch (err) {
-      setEmailError('Erro ao enviar. Tente novamente.')
-    } finally {
-      setLoading(false)
+    if (q.topics) {
+      if (topics.length < 3) { setTopicErr(true); return }
+      setStep(s => s + 1)
+      return
     }
+    if (!resps[step]) return
+    setStep(s => s + 1)
   }
 
-  const reset = () => {
-    setStep(0)
-    setAnswers({})
-    setTopics([])
-    setContact({ name: '', email: '', phone: '' })
-    setResult(null)
-    setEmailError('')
+  function back() { if (step > 0) setStep(s => s - 1) }
+
+  function restart() {
+    setStep(0); setResps({}); setTopics([]); setName(''); setEmail(''); setPhone('')
+    setLgpd(false); setNameErr(false); setLgpdErr(false); setTopicErr(false); setResult(null)
   }
 
-  // Don't show quiz if logged in
-  if (user) return null
-
-  return (
-    <Box
-      id="quiz"
-      sx={{ background: '#F5EFE4', py: { xs: 6, md: 10 }, px: { xs: 3, md: 6 } }}
-    >
-      <Box sx={{ maxWidth: 700, mx: 'auto' }}>
-        <Typography variant="h2" sx={{ fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#2E3B24', mb: 1 }}>
-          Descubra seu plano
-        </Typography>
-        <Typography sx={{ fontFamily: '"Lora", serif', fontStyle: 'italic', color: '#7A8A6A', mb: 5 }}>
-          6 perguntas. Menos de 2 minutos.
-        </Typography>
-
-        {!result ? (
-          <Box sx={{ background: '#fff', borderRadius: 3, p: { xs: 3, md: 5 }, boxShadow: '0 4px 24px rgba(46,59,36,0.07)' }}>
-            {/* Progress */}
-            <Box sx={{ display: 'flex', gap: 1, mb: 4 }}>
-              {Array.from({ length: totalSteps }).map((_, i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    flex: 1,
-                    height: 4,
-                    borderRadius: 2,
-                    background: i <= step ? '#4A5E3A' : 'rgba(74,94,58,0.15)',
-                    transition: 'background 0.3s',
-                  }}
-                />
-              ))}
-            </Box>
-
-            {step < QUESTIONS.length ? (
-              <QuizQuestion
-                question={QUESTIONS[step]}
-                answers={answers}
-                topics={topics}
-                onOption={handleOption}
-                onTopicToggle={handleTopicToggle}
-              />
-            ) : (
-              <ContactStep
-                contact={contact}
-                onChange={setContact}
-                emailError={emailError}
-              />
-            )}
-
-            <Box sx={{ display: 'flex', gap: 2, mt: 4 }}>
-              {step > 0 && (
-                <Button variant="outlined" onClick={() => setStep((s) => s - 1)} disabled={loading}>
-                  Voltar
-                </Button>
-              )}
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                disabled={!canProceed() || loading}
-                sx={{ ml: 'auto' }}
-                endIcon={loading && <CircularProgress size={14} color="inherit" />}
-              >
-                {step < QUESTIONS.length ? 'Próximo' : 'Ver meu resultado'}
-              </Button>
-            </Box>
-          </Box>
-        ) : (
-          <QuizResult result={result} onReset={reset} onDescClick={setDescDialog} />
-        )}
-      </Box>
-
-      {/* Description Dialog */}
-      <Dialog open={!!descDialog} onClose={() => setDescDialog(null)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.5rem' }}>
-          {descDialog?.label}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>{descDialog?.desc}</DialogContentText>
-        </DialogContent>
-        <Box sx={{ px: 3, pb: 3 }}>
-          <Button variant="contained" onClick={() => setDescDialog(null)}>Fechar</Button>
-        </Box>
-      </Dialog>
-    </Box>
-  )
-}
-
-function QuizQuestion({ question, answers, topics, onOption, onTopicToggle }) {
-  if (question.multi) {
+  if (result) {
     return (
-      <>
-        <Typography variant="h5" sx={{ fontFamily: '"Cormorant Garamond", serif', mb: 3 }}>
-          {question.question}
-        </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
-          {question.options.map((opt) => (
-            <Chip
-              key={opt.value}
-              label={opt.label}
-              onClick={() => onTopicToggle(opt.value)}
-              sx={{
-                cursor: 'pointer',
-                border: '1.5px solid',
-                borderColor: topics.includes(opt.value) ? '#4A5E3A' : 'rgba(74,94,58,0.25)',
-                background: topics.includes(opt.value) ? 'rgba(74,94,58,0.1)' : 'transparent',
-                color: '#2E3B24',
-                fontSize: '0.875rem',
-                py: 2.5,
-                '&:hover': { borderColor: '#4A5E3A' },
-              }}
-            />
-          ))}
-        </Box>
-        <Typography sx={{ mt: 2, fontSize: '0.8rem', color: '#7A8A6A' }}>
-          {topics.length}/5 selecionados (mín. 3)
-        </Typography>
-      </>
+      <section id="quiz" className="bg-green-dark text-cream relative overflow-hidden py-24 px-10">
+        <div className="absolute inset-0 opacity-[0.07] pointer-events-none">
+          <img src="/images/logo.jpeg" alt="" className="w-full h-full object-cover" />
+        </div>
+        <div className="max-w-[720px] mx-auto relative text-center">
+          <div className="bg-[rgba(245,239,228,0.09)] border-[1.5px] border-[rgba(245,239,228,0.2)] rounded-[20px] px-8 py-10">
+            <div className="text-[2.5rem] mb-4">{result.emoji}</div>
+            <p className="text-[0.7rem] tracking-[0.15em] text-gold-light uppercase font-semibold mb-2">
+              Olá, {result.firstName}! Esse é seu perfil NOMA
+            </p>
+            <h2 className="font-serif text-[2.2rem] font-semibold text-cream mb-3">{result.turma}</h2>
+            <p className="text-[0.95rem] text-[rgba(245,239,228,0.75)] leading-[1.7] max-w-[440px] mx-auto mb-6">{result.desc}</p>
+
+            <div className="flex gap-2 justify-center flex-wrap mb-6">
+              {[`Plano ${result.style}`, `Método ${result.method}`, result.plan].map(tag => (
+                <span key={tag} className="inline-block bg-[rgba(200,136,26,0.2)] text-gold-light rounded-full px-5 py-[0.4rem] text-[0.8rem] font-medium border-[1.5px] border-[rgba(229,168,42,0.4)]">
+                  ✦ {tag}
+                </span>
+              ))}
+            </div>
+
+            <p className="text-[0.85rem] text-[rgba(245,239,228,0.6)] leading-[1.6] mb-6">
+              Essas são nossas sugestões com base no que você nos contou. A gente conversa os detalhes juntos, sem compromisso.
+            </p>
+
+            <a href={WA_URL} target="_blank" rel="noopener"
+              className="inline-flex items-center gap-2 bg-green text-cream no-underline py-[0.85rem] px-8 rounded-full text-[0.95rem] font-medium transition-all hover:bg-[#3a4d2e]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.558 4.126 1.532 5.858L0 24l6.335-1.652A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.37l-.36-.214-3.728.972.994-3.634-.235-.374A9.818 9.818 0 1 1 12 21.818z"/>
+              </svg>
+              Agende sua aula experimental
+            </a>
+          </div>
+          <button onClick={restart} className="mt-6 bg-transparent border-[1.5px] border-[rgba(245,239,228,0.3)] text-[rgba(245,239,228,0.7)] px-8 py-[0.7rem] rounded-full cursor-pointer text-[0.875rem] font-sans hover:border-[rgba(245,239,228,0.6)] hover:text-cream transition-all">
+            Refazer o quiz
+          </button>
+        </div>
+      </section>
     )
   }
 
   return (
-    <>
-      <Typography variant="h5" sx={{ fontFamily: '"Cormorant Garamond", serif', mb: 3 }}>
-        {question.question}
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-        {question.options.map((opt) => (
-          <Box
-            key={opt.value}
-            onClick={() => onOption(question.id, opt.value)}
-            sx={{
-              border: '1.5px solid',
-              borderColor: answers[question.id] === opt.value ? '#4A5E3A' : 'rgba(74,94,58,0.2)',
-              borderRadius: 2,
-              p: 2,
-              cursor: 'pointer',
-              background: answers[question.id] === opt.value ? 'rgba(74,94,58,0.06)' : 'transparent',
-              transition: 'all 0.15s',
-              '&:hover': { borderColor: '#4A5E3A', background: 'rgba(74,94,58,0.04)' },
-            }}
-          >
-            <Typography sx={{ fontWeight: 500, color: '#2E3B24', fontSize: '0.9375rem' }}>
-              {opt.label}
-            </Typography>
-            {opt.sub && (
-              <Typography sx={{ fontSize: '0.8rem', color: '#7A8A6A', mt: 0.25 }}>{opt.sub}</Typography>
+    <section id="quiz" className="bg-green-dark text-cream relative overflow-hidden py-24 px-10">
+      <div className="absolute inset-0 opacity-[0.07] pointer-events-none">
+        <img src="/images/logo.jpeg" alt="" className="w-full h-full object-cover" />
+      </div>
+
+      <div className="max-w-[720px] mx-auto relative">
+        <SectionLabel className="text-gold-light text-center block">Queremos te conhecer melhor</SectionLabel>
+        <h2 className="font-serif text-[clamp(2.2rem,4vw,3.5rem)] font-semibold text-cream text-center leading-[1.1] mb-2">
+          Vamos descobrir seu<br /><em className="italic text-gold-light">caminho ideal?</em>
+        </h2>
+        <p className="text-center text-base text-[rgba(245,239,228,0.65)] leading-[1.7] mb-10">Sem respostas certas ou erradas.</p>
+
+        {/* Progress dots */}
+        <div className="flex gap-[6px] mb-8">
+          {PERGUNTAS.map((_, i) => (
+            <div key={i} className={`h-1 rounded-sm flex-1 transition-all duration-300 ${i < step ? 'bg-gold-light' : i === step ? 'bg-[rgba(229,168,42,0.5)]' : 'bg-[rgba(245,239,228,0.2)]'}`} />
+          ))}
+        </div>
+
+        <h3 className="font-serif text-[1.5rem] font-semibold text-cream mb-6 leading-[1.3] min-h-[3rem]">{q.t}</h3>
+
+        {/* Options */}
+        {!q.topics && !q.contato && (
+          <div className="flex flex-col gap-3">
+            {q.opts.map(([val, label]) => (
+              <button key={val} onClick={() => selectOpt(val)}
+                className={`text-left px-6 py-4 rounded-[14px] text-[0.93rem] cursor-pointer transition-all duration-150 font-sans border-[1.5px] w-full
+                  ${resps[step] === val
+                    ? 'bg-[rgba(200,136,26,0.2)] border-gold-light text-cream'
+                    : 'bg-[rgba(245,239,228,0.07)] border-[rgba(245,239,228,0.2)] text-cream hover:bg-[rgba(245,239,228,0.15)] hover:border-gold-light'}`}>
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Topics */}
+        {q.topics && (
+          <>
+            <div className="grid grid-cols-2 gap-2">
+              {q.topicList.map(t => (
+                <button key={t} onClick={() => toggleTopic(t)}
+                  className={`text-left px-6 py-4 rounded-[14px] text-[0.93rem] cursor-pointer transition-all duration-150 font-sans border-[1.5px] w-full
+                    ${topics.includes(t)
+                      ? 'bg-[rgba(200,136,26,0.2)] border-gold-light text-cream'
+                      : 'bg-[rgba(245,239,228,0.07)] border-[rgba(245,239,228,0.2)] text-cream hover:bg-[rgba(245,239,228,0.15)] hover:border-gold-light'}`}>
+                  {t}
+                </button>
+              ))}
+            </div>
+            {topicErr && <p className="text-[0.8rem] text-gold-light mt-3 text-center">{topics.length} selecionados (mínimo 3)</p>}
+            {!topicErr && topics.length > 0 && (
+              <p className="text-[0.8rem] text-[rgba(245,239,228,0.5)] mt-3 text-center">
+                {topics.length === 5 ? '5 selecionados (máximo)' : `${topics.length} selecionados`}
+              </p>
             )}
-          </Box>
-        ))}
-      </Box>
-    </>
-  )
-}
+          </>
+        )}
 
-function ContactStep({ contact, onChange, emailError }) {
-  return (
-    <>
-      <Typography variant="h5" sx={{ fontFamily: '"Cormorant Garamond", serif', mb: 1 }}>
-        Quase lá! Como posso te chamar?
-      </Typography>
-      <Typography sx={{ fontSize: '0.875rem', color: '#7A8A6A', mb: 3 }}>
-        Seus dados são usados só para te enviar o resultado. LGPD garantida.
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <TextField
-          label="Seu nome"
-          value={contact.name}
-          onChange={(e) => onChange((p) => ({ ...p, name: e.target.value }))}
-          fullWidth
-          size="small"
-        />
-        <TextField
-          label="Seu email"
-          type="email"
-          value={contact.email}
-          onChange={(e) => onChange((p) => ({ ...p, email: e.target.value }))}
-          fullWidth
-          size="small"
-          error={!!emailError}
-          helperText={emailError}
-        />
-        <TextField
-          label="WhatsApp (opcional)"
-          value={contact.phone}
-          onChange={(e) => onChange((p) => ({ ...p, phone: e.target.value }))}
-          fullWidth
-          size="small"
-        />
-      </Box>
-    </>
-  )
-}
+        {/* Contact */}
+        {q.contato && (
+          <div className="flex flex-col gap-[0.85rem]">
+            <div>
+              <input value={name} onChange={e => { setName(e.target.value); setNameErr(false) }}
+                placeholder="Seu nome completo (mínimo dois nomes)"
+                className="w-full bg-[rgba(245,239,228,0.08)] border-[1.5px] border-[rgba(245,239,228,0.2)] rounded-[14px] px-5 py-4 text-cream text-[0.95rem] outline-none font-sans placeholder:text-[rgba(245,239,228,0.4)]" />
+              {nameErr && <p className="text-[0.75rem] text-gold-light mt-1">Informe nome e sobrenome.</p>}
+            </div>
+            <input value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="Seu e-mail (opcional)"
+              className="w-full bg-[rgba(245,239,228,0.08)] border-[1.5px] border-[rgba(245,239,228,0.2)] rounded-[14px] px-5 py-4 text-cream text-[0.95rem] outline-none font-sans placeholder:text-[rgba(245,239,228,0.4)]" />
+            <input value={phone} onChange={e => setPhone(e.target.value)} type="tel" placeholder="WhatsApp (opcional)"
+              className="w-full bg-[rgba(245,239,228,0.08)] border-[1.5px] border-[rgba(245,239,228,0.2)] rounded-[14px] px-5 py-4 text-cream text-[0.95rem] outline-none font-sans placeholder:text-[rgba(245,239,228,0.4)]" />
+            <label className={`flex items-start gap-3 cursor-pointer pt-2 ${lgpdErr ? 'outline outline-[rgba(229,168,42,0.8)] outline-1 rounded-lg p-2' : ''}`}>
+              <input type="checkbox" checked={lgpd} onChange={e => { setLgpd(e.target.checked); setLgpdErr(false) }}
+                className="mt-1 w-4 h-4 accent-gold flex-shrink-0" />
+              <span className="text-[0.76rem] text-[rgba(245,239,228,0.55)] leading-[1.6]">
+                Concordo que a NOMA armazene meu nome, e-mail e respostas para entrar em contato e personalizar minha experiência.{' '}
+                <a href="#politica-privacidade" className="text-gold">Ver política de privacidade.</a>
+              </span>
+            </label>
+          </div>
+        )}
 
-function QuizResult({ result, onReset, onDescClick }) {
-  const capsules = [
-    { label: result.turma, desc: TURMA_DESC[result.turma], color: '#4A5E3A' },
-    { label: result.estilo, desc: ESTILO_DESC[result.estilo], color: '#6B7E59' },
-    { label: result.metodo, desc: METODO_DESC[result.metodo], color: '#2E3B24' },
-  ]
-
-  return (
-    <Box sx={{ background: '#fff', borderRadius: 3, p: { xs: 3, md: 5 }, boxShadow: '0 4px 24px rgba(46,59,36,0.07)', border: '1.5px solid rgba(74,94,58,0.15)' }}>
-      <Typography variant="h4" sx={{ fontFamily: '"Cormorant Garamond", serif', mb: 1 }}>
-        Seu resultado
-      </Typography>
-      <Typography sx={{ fontFamily: '"Lora", serif', fontStyle: 'italic', color: '#7A8A6A', mb: 3, fontSize: '0.9rem' }}>
-        Clique nas cápsulas para entender cada recomendação.
-      </Typography>
-
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mb: 3 }}>
-        {capsules.map((c) => (
-          <Chip
-            key={c.label}
-            label={c.label}
-            onClick={() => onDescClick(c)}
-            sx={{
-              background: c.color,
-              color: '#F5EFE4',
-              fontWeight: 500,
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-              py: 2.5,
-              '&:hover': { opacity: 0.85 },
-            }}
-          />
-        ))}
-        {/* Plan chip — no link */}
-        <Chip
-          label={`Plano ${result.plano}`}
-          sx={{
-            background: '#C8881A',
-            color: '#F5EFE4',
-            fontWeight: 500,
-            fontSize: '0.875rem',
-            py: 2.5,
-          }}
-        />
-      </Box>
-
-      <Typography sx={{ fontSize: '0.875rem', color: '#7A8A6A', mb: 3 }}>
-        Gostou? Fale com a Teacher Juli para começar a sua jornada.
-      </Typography>
-
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-        <Button
-          variant="contained"
-          href={`https://wa.me/5515988137161?text=Oi%20Teacher%20Juli!%20Fiz%20o%20quiz%20e%20meu%20resultado%20foi%20${result.turma}%20%7C%20${result.estilo}%20%7C%20Plano%20${result.plano}`}
-          target="_blank"
-          sx={{ background: '#4A5E3A' }}
-        >
-          Falar com a Teacher Juli
-        </Button>
-        <Button variant="outlined" onClick={onReset}>
-          Refazer o quiz
-        </Button>
-      </Box>
-    </Box>
+        {/* Navigation */}
+        <div className="flex justify-between items-center mt-7">
+          <button onClick={back} style={{ visibility: step === 0 ? 'hidden' : 'visible' }}
+            className="bg-transparent border-[1.5px] border-[rgba(245,239,228,0.3)] text-[rgba(245,239,228,0.6)] px-6 py-[0.7rem] rounded-full cursor-pointer text-[0.875rem] font-sans hover:border-[rgba(245,239,228,0.7)] hover:text-cream transition-all">
+            ← Voltar
+          </button>
+          <button onClick={next} disabled={submitting}
+            className={`bg-gold text-white border-none px-8 py-3 rounded-full cursor-pointer text-[0.93rem] font-medium font-sans transition-all hover:bg-gold-light hover:-translate-y-px ${submitting ? 'opacity-60 cursor-not-allowed' : ''}`}>
+            {submitting ? 'Enviando...' : step >= total - 1 ? 'Ver meu resultado ✦' : 'Próxima →'}
+          </button>
+        </div>
+      </div>
+    </section>
   )
 }

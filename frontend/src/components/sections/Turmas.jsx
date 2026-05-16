@@ -1,151 +1,168 @@
-import { Box, Typography, Grid, Chip } from '@mui/material'
+import { useFadeIn } from '../../hooks/useFadeIn'
+import SectionLabel from '../ui/SectionLabel'
 
-const TURMAS = [
+const turmas = [
   {
-    name: 'NOMA Sprouts',
-    age: '8 a 11 anos',
-    tag: 'Pequenos exploradores',
-    color: '#f5e6c8',
-    desc: 'Inglês como aventura. Histórias, jogos e descobertas que tornam o aprendizado natural e divertido.',
+    cls: 'sprouts',
+    badge: 'NOMA Sprouts',
+    badgeCls: 'bg-[rgba(200,136,26,0.15)] text-[#7A5008]',
+    cardBg: 'bg-[#FBF3E2]',
+    title: 'Pequenos exploradores',
+    age: 'Para crianças de 8 a 11 anos',
+    text: 'Aprendizado lúdico com brincadeiras, músicas e histórias. As crianças aprendem sem perceber e adoram cada momento.',
   },
   {
-    name: 'NOMA Buds',
-    age: '12 a 17 anos',
-    tag: 'Cultura, tecnologia e mundo',
-    color: '#dde8d5',
-    desc: 'Conectando o inglês com a realidade dos jovens — séries, música, tendências e o futuro que eles vão construir.',
+    cls: 'buds',
+    badge: 'NOMA Buds',
+    badgeCls: 'bg-[rgba(74,94,58,0.15)] text-green-dark',
+    cardBg: 'bg-[#E8F2E0]',
+    title: 'Cultura, tecnologia e mundo',
+    age: 'Para jovens de 12 a 17 anos',
+    text: 'Inglês conectado com cultura, tecnologia e tudo que move essa geração. Para quem está descobrindo o mundo.',
   },
   {
-    name: 'NOMA Bloom',
-    age: '18+ anos',
-    tag: 'Trabalho, viagens e relacionamentos',
-    color: '#ede8df',
-    desc: 'Inglês para a vida adulta. Conversas reais, vocabulário prático e confiança para qualquer situação.',
+    cls: 'bloom',
+    badge: 'NOMA Bloom',
+    badgeCls: 'bg-[rgba(200,120,60,0.15)] text-[#7A3A10]',
+    cardBg: 'bg-[#FAEADE]',
+    title: 'Trabalho, viagens e relacionamentos',
+    age: 'Para adultos a partir de 18 anos',
+    text: 'Inglês para quem vive intensamente: trabalho, viagens, relacionamentos. Com a seriedade que você precisa e a leveza que merece.',
   },
 ]
 
-const ESTILOS = [
+const estilos = [
   {
-    icon: '✈',
-    name: 'Flow',
-    desc: 'Comunicação em primeiro lugar. Prática oral intensa com situações reais.',
+    id: 'flow',
+    emoji: '✈',
+    color: 'border-t-gold',
+    badgeBg: 'bg-[rgba(200,136,26,0.1)] text-[#8B5E0A]',
+    title: 'Comunicação em primeiro lugar',
+    desc: 'No Flow, a conversa não espera. Cada aula tem um tema novo, vocabulário em contexto real e muita prática oral. O objetivo é você ganhar confiança para se comunicar de verdade, sem travar.',
+    items: ['Temas do seu mundo', 'Vocabulário por contexto', 'Conversação desde o primeiro dia'],
   },
   {
-    icon: '🌱',
-    name: 'Roots',
-    desc: 'Base gramatical sólida. Estrutura para quem quer ler, escrever e falar com precisão.',
-  },
-  {
-    icon: '🐝',
-    name: 'Bee',
-    desc: 'Suporte escolar contextualizado. Inglês da escola com significado, sem decoreba.',
+    id: 'roots',
+    emoji: '🌱',
+    color: 'border-t-green',
+    badgeBg: 'bg-[rgba(74,94,58,0.1)] text-green-dark',
+    title: 'Estrutura que sustenta tudo',
+    desc: 'No Roots, você entende o inglês por dentro. A gramática deixa de ser decoreba e vira ferramenta. Cada aula constrói uma base sólida para que você leia, escreva e fale com precisão.',
+    items: ['Gramática aplicada, não decorada', 'Estrutura para ler e escrever melhor', 'Base para fluência duradoura'],
   },
 ]
 
-const METODOS = [
+const bee = {
+  id: 'bee',
+  emoji: '🐝',
+  title: 'Reforço escolar com propósito',
+  desc: 'O Bee é para quem precisa de apoio com o inglês do colégio, mas sem a pressão de decorar regra. A gente pega o conteúdo da escola e transforma em algo que faz sentido de verdade, com conversação, contexto e leveza.',
+  items: ['Conteúdo escolar com contexto real', 'Gramática sem decoreba', 'Preparação para provas e vestibular'],
+}
+
+const metodos = [
   {
-    icon: '✦',
-    name: 'Quest',
-    desc: 'Novo tema a cada aula. Vocabulário construído por contexto e descoberta.',
+    id: 'quest',
+    label: '✦ Quest',
+    color: 'border-t-gold',
+    badgeBg: 'bg-[rgba(200,136,26,0.1)] text-[#8B5E0A]',
+    title: 'Um tema novo a cada aula',
+    desc: 'No Quest, cada aula começa com um tema do seu universo. A conversa acontece desde o primeiro minuto, o vocabulário entra pelo contexto e a fluência vem pela prática constante.',
+    items: ['Conversação ao vivo', 'Vocabulário por contexto', 'Temas que você escolhe'],
   },
   {
-    icon: '✦',
-    name: 'Level',
-    desc: 'Gamificado. Desafios, conquistas e progressão que tornam o aprendizado viciante.',
+    id: 'level',
+    label: '✦ Level',
+    color: 'border-t-green',
+    badgeBg: 'bg-[rgba(74,94,58,0.1)] text-green-dark',
+    title: 'Aprenda como num jogo',
+    desc: 'No Level, cada aula tem desafios, pontuações e metas. A sensação de avançar de fase mantém a motivação alta. O conteúdo tem temas mas o formato é gamificado do começo ao fim.',
+    items: ['Desafios e conquistas', 'Motivação constante', 'Aprender sem parecer aula'],
   },
 ]
+
+function StyleCard({ item, full = false }) {
+  const ref = useFadeIn()
+  return (
+    <div ref={ref} id={item.id}
+      className={`fade-in bg-white rounded-[20px] p-8 border border-[rgba(74,94,58,0.12)] border-t-4 ${item.color} ${full ? 'mt-6' : ''}`}>
+      <span className={`inline-block ${item.badgeBg || 'bg-[rgba(200,160,20,0.1)] text-[#7A5C00]'} rounded-full px-[0.9rem] py-[0.25rem] text-[0.7rem] font-bold tracking-[0.12em] uppercase mb-4`}>
+        {item.emoji || item.label}
+      </span>
+      <h4 className="font-serif text-[1.4rem] font-semibold text-green-dark mb-3">{item.title}</h4>
+      <p className="text-[0.875rem] text-muted leading-[1.7] mb-4">{item.desc}</p>
+      <div className="flex flex-col gap-1">
+        {item.items.map(i => <span key={i} className="text-[0.8rem] text-green">✦ {i}</span>)}
+      </div>
+    </div>
+  )
+}
+
+function TurmaCard({ turma }) {
+  const ref = useFadeIn()
+  return (
+    <div ref={ref} className={`fade-in ${turma.cardBg} rounded-[24px] p-9 transition-all duration-200 hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(46,59,36,0.1)]`}>
+      <span className={`inline-block text-[0.68rem] tracking-[0.15em] uppercase font-semibold px-[0.85rem] py-[0.28rem] rounded-full mb-5 ${turma.badgeCls}`}>
+        {turma.badge}
+      </span>
+      <h3 className="font-serif text-[1.9rem] font-semibold text-green-dark mb-1 leading-[1.15]">{turma.title}</h3>
+      <span className="text-[0.78rem] text-muted mb-4 block">{turma.age}</span>
+      <p className="text-[0.88rem] text-muted leading-[1.65]">{turma.text}</p>
+    </div>
+  )
+}
 
 export default function Turmas() {
+  const headerRef = useFadeIn()
+
   return (
-    <Box id="turmas" sx={{ background: '#F5EFE4', py: { xs: 6, md: 10 }, px: { xs: 3, md: 6 } }}>
-      <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
-        {/* Turmas */}
-        <Typography variant="h2" sx={{ fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', color: '#2E3B24', mb: 1 }}>
-          Turmas
-        </Typography>
-        <Typography sx={{ fontFamily: '"Lora", serif', fontStyle: 'italic', color: '#7A8A6A', mb: 5 }}>
-          Cada idade, uma jornada única.
-        </Typography>
-        <Grid container spacing={3} sx={{ mb: 8 }}>
-          {TURMAS.map((t) => (
-            <Grid item xs={12} md={4} key={t.name}>
-              <Box
-                sx={{
-                  background: t.color,
-                  borderRadius: 3,
-                  p: 3.5,
-                  height: '100%',
-                  transition: 'transform 0.2s',
-                  '&:hover': { transform: 'translateY(-4px)' },
-                }}
-              >
-                <Chip
-                  label={t.age}
-                  size="small"
-                  sx={{ background: 'rgba(46,59,36,0.1)', color: '#2E3B24', mb: 2, fontSize: '0.75rem' }}
-                />
-                <Typography variant="h5" sx={{ fontFamily: '"Cormorant Garamond", serif', mb: 0.5 }}>
-                  {t.name}
-                </Typography>
-                <Typography
-                  sx={{ fontFamily: '"Lora", serif', fontStyle: 'italic', fontSize: '0.85rem', color: '#7A8A6A', mb: 2 }}
-                >
-                  {t.tag}
-                </Typography>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 300, color: '#4A5E3A', lineHeight: 1.65 }}>
-                  {t.desc}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
+    <section id="turmas" className="bg-cream relative overflow-hidden py-24 px-10">
+      <div className="absolute left-[-80px] bottom-[-60px] w-[360px] h-[360px] opacity-[0.07] pointer-events-none rounded-full overflow-hidden">
+        <img src="/images/logo.jpeg" alt="" className="w-full h-full object-cover" />
+      </div>
+
+      <div className="max-w-[1200px] mx-auto relative">
+        <div ref={headerRef} className="fade-in text-center mb-14">
+          <SectionLabel>Para cada momento da vida</SectionLabel>
+          <h2 className="font-serif text-[clamp(2.2rem,4vw,3.5rem)] font-semibold leading-[1.1] text-green-dark mb-5">
+            Encontre sua <em className="italic text-gold">turma</em>
+          </h2>
+          <p className="text-base text-muted leading-[1.7] max-w-[560px] mx-auto">
+            Cada faixa etária tem seu próprio ritmo, vocabulário e forma de aprender. Por isso, criamos experiências feitas para cada fase.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          {turmas.map(t => <TurmaCard key={t.badge} turma={t} />)}
+        </div>
 
         {/* Estilos */}
-        <Typography variant="h3" sx={{ fontSize: 'clamp(1.6rem, 3vw, 2.5rem)', color: '#2E3B24', mb: 1 }}>
-          Estilos de ensino
-        </Typography>
-        <Typography sx={{ fontFamily: '"Lora", serif', fontStyle: 'italic', color: '#7A8A6A', mb: 4 }}>
-          Como você aprende melhor?
-        </Typography>
-        <Grid container spacing={3} sx={{ mb: 8 }}>
-          {ESTILOS.map((e) => (
-            <Grid item xs={12} sm={4} key={e.name}>
-              <Box sx={{ p: 3, border: '1px solid rgba(74,94,58,0.2)', borderRadius: 2, height: '100%' }}>
-                <Typography sx={{ fontSize: '1.5rem', mb: 1.5 }}>{e.icon}</Typography>
-                <Typography variant="h6" sx={{ fontFamily: '"Cormorant Garamond", serif', mb: 1 }}>
-                  {e.name}
-                </Typography>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 300, color: '#7A8A6A', lineHeight: 1.6 }}>
-                  {e.desc}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
+        <div id="estilos" className="max-w-[900px] mx-auto mt-16">
+          <div className="text-center mb-8">
+            <SectionLabel>Estilos de ensino</SectionLabel>
+            <h3 className="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-semibold text-green-dark">
+              Como a gente <em className="italic text-gold">ensina</em>
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {estilos.map(e => <StyleCard key={e.id} item={e} />)}
+          </div>
+          <StyleCard item={{ ...bee, color: 'border-t-[#C8881A]', badgeBg: 'bg-[rgba(200,160,20,0.1)] text-[#7A5C00]', label: '🐝 Bee' }} full />
+        </div>
 
         {/* Métodos */}
-        <Typography variant="h3" sx={{ fontSize: 'clamp(1.6rem, 3vw, 2.5rem)', color: '#2E3B24', mb: 1 }}>
-          Métodos
-        </Typography>
-        <Typography sx={{ fontFamily: '"Lora", serif', fontStyle: 'italic', color: '#7A8A6A', mb: 4 }}>
-          A dinâmica das aulas.
-        </Typography>
-        <Grid container spacing={3}>
-          {METODOS.map((m) => (
-            <Grid item xs={12} sm={6} key={m.name}>
-              <Box sx={{ p: 3, background: '#fff', borderRadius: 2, boxShadow: '0 2px 8px rgba(46,59,36,0.06)' }}>
-                <Typography sx={{ color: '#C8881A', mb: 1 }}>{m.icon}</Typography>
-                <Typography variant="h6" sx={{ fontFamily: '"Cormorant Garamond", serif', mb: 1 }}>
-                  {m.name}
-                </Typography>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 300, color: '#7A8A6A', lineHeight: 1.6 }}>
-                  {m.desc}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-    </Box>
+        <div className="max-w-[900px] mx-auto mt-12">
+          <div className="text-center mb-6">
+            <SectionLabel>Métodos</SectionLabel>
+            <h3 className="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-semibold text-green-dark">
+              Como cada aula <em className="italic text-gold">acontece</em>
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {metodos.map(m => <StyleCard key={m.id} item={m} />)}
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }

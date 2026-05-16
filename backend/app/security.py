@@ -1,52 +1,36 @@
-import hashlib
 from datetime import datetime, timedelta, timezone
-from typing import Any
-
-from cryptography.fernet import Fernet
+import bcrypt
 from jose import JWTError, jwt
-from passlib.context import CryptContext
-
-from app.config import get_settings
-
-settings = get_settings()
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-_fernet: Fernet | None = None
+from .config import settings
 
 
-def _get_fernet() -> Fernet:
-    global _fernet
-    if _fernet is None:
-        _fernet = Fernet(settings.fernet_key.encode())
-    return _fernet
-
-
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+def hash_password(plain: str) -> str:
+    return bcrypt.hashpw(plain.encode(), bcrypt.gensalt()).decode()
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    return bcrypt.checkpw(plain.encode(), hashed.encode())
 
 
-def encrypt_field(value: str) -> str:
-    return _get_fernet().encrypt(value.encode()).decode()
+def _create_token(data: dict, expires_delta: timedelta) -> str:
+    payload = data.copy()
+    payload["exp"] = datetime.now(timezone.utc) + expires_delta
+    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
-def decrypt_field(token: str) -> str:
-    return _get_fernet().decrypt(token.encode()).decode()
+def create_access_token(user_id: int, role: str) -> str:
+    return _create_token(
+        {"sub": str(user_id), "role": role, "type": "access"},
+        timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+    )
 
 
-def hash_email(email: str) -> str:
-    """Deterministic hash for lookups — SHA-256 of lowercased email."""
-    return hashlib.sha256(email.lower().encode()).hexdigest()
+def create_refresh_token(user_id: int) -> str:
+    return _create_token(
+        {"sub": str(user_id), "type": "refresh"},
+        timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
+    )
 
 
-def create_access_token(data: dict[str, Any]) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(hours=settings.token_expire_hours)
-    payload = {**data, "exp": expire}
-    return jwt.encode(payload, settings.secret_key, algorithm="HS256")
-
-
-def decode_token(token: str) -> dict[str, Any]:
-    return jwt.decode(token, settings.secret_key, algorithms=["HS256"])
+def decode_token(token: str) -> dict:
+    return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])

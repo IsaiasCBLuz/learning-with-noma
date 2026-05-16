@@ -1,142 +1,97 @@
-import { Box, Typography, Grid, Chip } from '@mui/material'
+import { useFadeIn } from '../../hooks/useFadeIn'
+import SectionLabel from '../ui/SectionLabel'
 
-const PLANOS = [
-  {
-    group: 'Light',
-    sub: '1x por semana',
-    variants: [
-      { name: 'Light', credits: 4, period: 'Mensal', tag: '' },
-      { name: 'Light+', credits: 12, period: 'Trimestral', tag: '' },
-      { name: 'Light++', credits: 24, period: 'Semestral', tag: '' },
-      { name: 'Light ✦', credits: 48, period: 'Anual', tag: 'Melhor custo-benefício' },
-    ],
-    color: '#f0ead8',
-  },
-  {
-    group: 'Full',
-    sub: '2x por semana',
-    variants: [
-      { name: 'Full', credits: 8, period: 'Mensal', tag: '' },
-      { name: 'Full+', credits: 24, period: 'Trimestral', tag: '' },
-      { name: 'Full++', credits: 48, period: 'Semestral', tag: '' },
-      { name: 'Full ✦', credits: 96, period: 'Anual', tag: 'Melhor custo-benefício' },
-    ],
-    color: '#dde8d5',
-  },
-  {
-    group: 'Bee',
-    sub: 'Suporte escolar',
-    variants: [
-      { name: 'Bee', credits: 4, period: 'Mensal', tag: 'Especial' },
-    ],
-    color: '#f5e8cf',
-  },
+const lightRows = [
+  { label: 'Light', sub: 'mensal' },
+  { label: 'Light+', sub: 'trimestral' },
+  { label: 'Light++', sub: 'semestral' },
+  { label: 'Light ✦', sub: 'anual', highlight: true },
+]
+
+const fullRows = [
+  { label: 'Full', sub: 'mensal' },
+  { label: 'Full+', sub: 'trimestral' },
+  { label: 'Full++', sub: 'semestral' },
+  { label: 'Full ✦', sub: 'anual', highlight: true },
 ]
 
 export default function Planos() {
+  const headerRef = useFadeIn()
+  const cardsRef = useFadeIn()
+
   return (
-    <Box
-      id="planos"
-      sx={{ background: '#F5EFE4', py: { xs: 6, md: 10 }, px: { xs: 3, md: 6 } }}
-    >
-      <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
-        <Typography variant="h2" sx={{ fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', color: '#2E3B24', mb: 1 }}>
-          Planos
-        </Typography>
-        <Typography sx={{ fontFamily: '"Lora", serif', fontStyle: 'italic', color: '#7A8A6A', mb: 2 }}>
-          Cada plano usa créditos — uma aula = um crédito.
-        </Typography>
-        <Typography sx={{ fontSize: '0.8125rem', color: '#7A8A6A', mb: 6, fontWeight: 300 }}>
-          Aulas de 1h30 · Valores sob consulta
-        </Typography>
+    <section id="pacotes" className="bg-[#f9f4ec] py-24 px-10">
+      <div className="max-w-[1200px] mx-auto">
+        <div ref={headerRef} className="fade-in text-center mb-12">
+          <SectionLabel>Investimento</SectionLabel>
+          <h2 className="font-serif text-[clamp(2.2rem,4vw,3.5rem)] font-semibold leading-[1.1] text-green-dark mb-4">
+            Escolha seu <em className="italic text-gold">plano</em>
+          </h2>
+          <div className="inline-flex items-center gap-2 bg-[rgba(74,94,58,0.12)] border border-[rgba(74,94,58,0.2)] rounded-full px-[1.1rem] py-[0.4rem] mb-4">
+            <span className="text-[0.8rem] text-green-dark font-semibold">⏱ Nossas aulas têm 1h30 de duração</span>
+          </div>
+          <p className="text-base text-muted leading-[1.7] max-w-[560px] mx-auto">
+            Você escolhe a frequência e o compromisso que cabe na sua vida. Conversamos sobre o investimento de forma personalizada.
+          </p>
+        </div>
 
-        <Grid container spacing={4}>
-          {PLANOS.map((plano) => (
-            <Grid item xs={12} md={plano.group === 'Bee' ? 12 : 6} key={plano.group}>
-              <Box
-                sx={{
-                  background: plano.color,
-                  borderRadius: 3,
-                  p: 4,
-                  height: '100%',
-                }}
-              >
-                <Typography
-                  variant="h4"
-                  sx={{ fontFamily: '"Cormorant Garamond", serif', color: '#2E3B24', mb: 0.5 }}
-                >
-                  {plano.group}
-                </Typography>
-                <Typography
-                  sx={{ fontFamily: '"Lora", serif', fontStyle: 'italic', color: '#7A8A6A', fontSize: '0.9rem', mb: 3 }}
-                >
-                  {plano.sub}
-                </Typography>
+        <div ref={cardsRef} className="fade-in grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Light */}
+          <div className="bg-white rounded-[24px] p-10 border border-[rgba(74,94,58,0.12)]">
+            <span className="inline-block bg-[rgba(74,94,58,0.1)] text-green-dark rounded-full px-4 py-[0.3rem] text-[0.75rem] font-semibold tracking-[0.1em] uppercase mb-5">
+              ✈ Light
+            </span>
+            <h3 className="font-serif text-[1.6rem] font-semibold text-green-dark mb-2">1x por semana</h3>
+            <p className="text-[0.9rem] text-muted mb-6 leading-[1.6]">
+              Ideal para quem quer consistência sem pressão. Uma aula por semana para ir construindo com calma.
+            </p>
+            <div className="flex flex-col gap-0">
+              {lightRows.map(row => (
+                <div key={row.label} className={`flex justify-between items-center py-[0.6rem] ${row === lightRows[lightRows.length - 1] ? '' : 'border-b border-[rgba(74,94,58,0.08)]'}`}>
+                  <span className={`text-[0.875rem] ${row.highlight ? 'text-gold' : 'text-muted'}`}>
+                    {row.label} <span className="opacity-55 text-[0.78rem]">({row.sub})</span>
+                  </span>
+                  <span className={`text-[0.875rem] font-medium ${row.highlight ? 'text-gold' : 'text-green-dark'}`}>
+                    {row.highlight ? 'melhor condição' : 'sob consulta'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
 
-                <Grid container spacing={2}>
-                  {plano.variants.map((v) => (
-                    <Grid item xs={12} sm={plano.group === 'Bee' ? 4 : 6} key={v.name}>
-                      <Box
-                        sx={{
-                          background: 'rgba(255,255,255,0.65)',
-                          borderRadius: 2,
-                          p: 2.5,
-                          border: '1px solid rgba(74,94,58,0.12)',
-                          position: 'relative',
-                        }}
-                      >
-                        {v.tag && (
-                          <Chip
-                            label={v.tag}
-                            size="small"
-                            sx={{
-                              position: 'absolute',
-                              top: -10,
-                              right: 12,
-                              background: '#C8881A',
-                              color: '#fff',
-                              fontSize: '0.65rem',
-                            }}
-                          />
-                        )}
-                        <Typography
-                          sx={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.25rem', fontWeight: 500, mb: 0.5 }}
-                        >
-                          {v.name}
-                        </Typography>
-                        <Typography sx={{ fontSize: '0.8rem', color: '#7A8A6A', mb: 0.5 }}>{v.period}</Typography>
-                        <Typography sx={{ fontSize: '0.8rem', color: '#4A5E3A', fontWeight: 500 }}>
-                          {v.credits} créditos
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
+          {/* Full */}
+          <div className="bg-green-dark rounded-[24px] p-10">
+            <span className="inline-block bg-[rgba(245,239,228,0.15)] text-gold-light rounded-full px-4 py-[0.3rem] text-[0.75rem] font-semibold tracking-[0.1em] uppercase mb-5">
+              ✦ Full
+            </span>
+            <h3 className="font-serif text-[1.6rem] font-semibold text-cream mb-2">2x por semana</h3>
+            <p className="text-[0.9rem] text-[rgba(245,239,228,0.7)] mb-6 leading-[1.6]">
+              Para quem quer acelerar com mais imersão. Duas aulas por semana para evoluir mais rápido.
+            </p>
+            <div className="flex flex-col gap-0">
+              {fullRows.map(row => (
+                <div key={row.label} className={`flex justify-between items-center py-[0.6rem] ${row === fullRows[fullRows.length - 1] ? '' : 'border-b border-[rgba(245,239,228,0.1)]'}`}>
+                  <span className={`text-[0.875rem] ${row.highlight ? 'text-gold-light' : 'text-[rgba(245,239,228,0.6)]'}`}>
+                    {row.label} <span className="opacity-55 text-[0.78rem]">({row.sub})</span>
+                  </span>
+                  <span className={`text-[0.875rem] font-medium ${row.highlight ? 'text-gold-light' : 'text-cream'}`}>
+                    {row.highlight ? 'melhor condição' : 'sob consulta'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-        <Box sx={{ mt: 5, textAlign: 'center' }}>
-          <Typography sx={{ fontSize: '0.875rem', color: '#7A8A6A', fontWeight: 300, mb: 2 }}>
-            Ficou com dúvida sobre qual plano é o ideal pra você?
-          </Typography>
-          <Typography
-            component="a"
-            href="https://wa.me/5515988137161?text=Oi%20Teacher%20Juli!%20Quero%20saber%20mais%20sobre%20os%20planos."
-            target="_blank"
-            sx={{
-              color: '#4A5E3A',
-              fontWeight: 500,
-              fontSize: '0.875rem',
-              textDecoration: 'underline',
-              cursor: 'pointer',
-            }}
-          >
-            Fale comigo no WhatsApp →
-          </Typography>
-        </Box>
-      </Box>
-    </Box>
+        <div className="text-center mt-8">
+          <p className="text-[0.9rem] text-muted mb-5">
+            Faça o quiz e descubra qual combinação faz mais sentido pra você. Depois é só a gente conversar.
+          </p>
+          <a href="#quiz" className="inline-block bg-green text-cream no-underline py-[0.9rem] px-[2.2rem] rounded-full text-[0.95rem] font-medium transition-all hover:bg-green-dark hover:-translate-y-0.5">
+            Descobrir meu perfil
+          </a>
+        </div>
+      </div>
+    </section>
   )
 }

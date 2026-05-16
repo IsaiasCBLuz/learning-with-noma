@@ -1,91 +1,58 @@
-import { Box, Typography, Grid } from '@mui/material'
-
-const VALUES = [
-  { title: 'Acolhimento', desc: 'Um espaço seguro onde errar faz parte do processo.' },
-  { title: 'Leveza', desc: 'Aprender não precisa ser pesado. Aqui, é com prazer.' },
-  { title: 'Autenticidade', desc: 'Seu inglês, do seu jeito. Sem fórmulas prontas.' },
-  { title: 'Progresso Real', desc: 'Sem ilusões. Evolução consistente, passo a passo.' },
-]
+import { useFadeIn } from '../../hooks/useFadeIn'
+import SectionLabel from '../ui/SectionLabel'
 
 export default function Sobre() {
-  return (
-    <Box
-      id="sobre"
-      sx={{
-        background: '#2E3B24',
-        color: '#F5EFE4',
-        py: { xs: 6, md: 10 },
-        px: { xs: 3, md: 6 },
-        position: 'relative',
-        overflow: 'hidden',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `repeating-linear-gradient(
-            45deg,
-            rgba(245,239,228,0.03) 0px,
-            rgba(245,239,228,0.03) 1px,
-            transparent 1px,
-            transparent 12px
-          )`,
-          pointerEvents: 'none',
-        },
-      }}
-    >
-      <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
-        <Box sx={{ mb: 6, maxWidth: 700 }}>
-          <Typography
-            component="p"
-            sx={{
-              fontFamily: '"Lora", serif',
-              fontStyle: 'italic',
-              fontSize: '1.1rem',
-              lineHeight: 1.8,
-              color: 'rgba(245,239,228,0.85)',
-              mb: 2,
-            }}
-          >
-            "Nossa missão é transformar o aprendizado do inglês em uma jornada autêntica e significativa."
-          </Typography>
-          <Typography
-            sx={{ fontSize: '0.875rem', fontWeight: 300, color: 'rgba(245,239,228,0.6)', lineHeight: 1.7 }}
-          >
-            Na NOMA, acreditamos que cada pessoa aprende de um jeito único. Por isso, combinamos método pedagógico sólido com uma abordagem humana — para que você não apenas aprenda inglês, mas se conecte com o idioma de verdade.
-          </Typography>
-        </Box>
+  const cardsRef = useFadeIn()
 
-        <Grid container spacing={3}>
-          {VALUES.map((v) => (
-            <Grid item xs={12} sm={6} md={3} key={v.title}>
-              <Box
-                sx={{
-                  border: '1px solid rgba(245,239,228,0.15)',
-                  borderRadius: 2,
-                  p: 3,
-                  background: 'rgba(245,239,228,0.07)',
-                  height: '100%',
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontFamily: '"Cormorant Garamond", serif',
-                    fontSize: '1.2rem',
-                    mb: 1,
-                    color: '#E5A82A',
-                  }}
-                >
-                  {v.title}
-                </Typography>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 300, color: 'rgba(245,239,228,0.7)', lineHeight: 1.6 }}>
-                  {v.desc}
-                </Typography>
-              </Box>
-            </Grid>
+  const cards = [
+    { title: '✦ Acolhimento', text: 'Um lugar onde errar faz parte do processo. Aqui você se sente seguro para tentar.' },
+    { title: '✦ Leveza', text: 'Aprender pode ser divertido. Cada aula é uma nova aventura com propósito.' },
+    { title: '✦ Autenticidade', text: 'Seu jeito de aprender é único. Respeitamos e valorizamos cada trajetória.' },
+    { title: '✦ Progresso Real', text: 'Resultados concretos, na prática. Inglês que serve para a vida real.' },
+  ]
+
+  return (
+    <section id="sobre" className="bg-green-dark text-cream relative overflow-hidden py-24 px-10">
+      <div className="absolute right-0 top-0 bottom-0 w-[45%] opacity-10 pointer-events-none">
+        <img src="/images/logo.jpeg" alt="" className="w-full h-full object-cover" />
+      </div>
+
+      <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-start relative">
+        <div>
+          <SectionLabel className="text-gold-light">Quem somos</SectionLabel>
+          <h2 className="font-serif text-[clamp(2.2rem,4vw,3.5rem)] font-semibold leading-[1.1] text-cream mb-5">
+            Uma escola que<br /><em className="italic text-gold-light">acredita</em> em você
+          </h2>
+          <p className="font-lora text-[1.1rem] italic leading-[1.8] text-[rgba(245,239,228,0.85)] mb-8">
+            NOMA nasceu da crença de que todo mundo tem um caminho único para a fluência. Não existe o método certo, existe o método certo{' '}
+            <em className="not-italic text-gold-light font-normal">para você.</em>
+          </p>
+          <p className="font-lora text-[1.05rem] mb-8 text-[rgba(245,239,228,0.85)]">
+            <em className="text-gold-light not-italic font-medium">Missão</em>
+            <span className="text-[rgba(245,239,228,0.4)] mx-2">·</span>
+            Oferecer um ensino que valorize o ritmo individual, tornando-se acolhedor, leve e significativo.
+          </p>
+          <p className="font-lora text-[1.05rem] mb-8 text-[rgba(245,239,228,0.85)]">
+            <em className="text-gold-light not-italic font-medium">Objetivo</em>
+            <span className="text-[rgba(245,239,228,0.4)] mx-2">·</span>
+            Inspirar novas formas de aprender, colocando o aluno como protagonista da sua jornada.
+          </p>
+          <p className="font-lora text-[1.05rem] text-[rgba(245,239,228,0.85)]">
+            <em className="text-gold-light not-italic font-medium">Valores</em>
+            <span className="text-[rgba(245,239,228,0.4)] mx-2">·</span>
+            Acreditamos que o aprendizado não é linear, e que cada manobra é válida quando faz sentido para quem aprende.
+          </p>
+        </div>
+
+        <div ref={cardsRef} className="fade-in flex flex-col gap-4">
+          {cards.map(card => (
+            <div key={card.title} className="bg-[rgba(245,239,228,0.07)] border border-[rgba(245,239,228,0.15)] rounded-2xl px-7 py-6">
+              <h3 className="font-serif text-[1.25rem] font-semibold text-gold-light mb-2">{card.title}</h3>
+              <p className="text-[0.875rem] text-[rgba(245,239,228,0.72)] leading-[1.65]">{card.text}</p>
+            </div>
           ))}
-        </Grid>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </section>
   )
 }

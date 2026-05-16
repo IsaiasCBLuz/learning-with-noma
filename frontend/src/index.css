@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream:      #F5EFE4;
+  --color-green:      #4A5E3A;
+  --color-green-dark: #2E3B24;
+  --color-green-light:#6B7E59;
+  --color-gold:       #C8881A;
+  --color-gold-light: #E5A82A;
+  --color-muted:      #7A8A6A;
+
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans:  "DM Sans", system-ui, sans-serif;
+  --font-lora:  "Lora", Georgia, serif;
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-cream);
+    color: var(--color-green-dark);
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--color-cream); }
+  ::-webkit-scrollbar-thumb { background: var(--color-green); border-radius: 3px; }
+}
+
+@layer utilities {
+  .font-serif { font-family: var(--font-serif); }
+  .font-lora  { font-family: var(--font-lora); }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    .fade-in { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+}

@@ -1,158 +1,237 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
-from sqlalchemy.orm import selectinload
-import uuid
-
-from app.database import get_db
-from app.deps import get_admin_user
-from app.models import User, StudentProfile, UserRole, PLAN_CREDITS, PLAN_MAX_PER_WEEK, PlanType
-from app.schemas import (
-    AdminCreateStudentRequest, AdminUpdateStudentRequest,
-    UserOut, StudentProfileOut,
+import csv
+import io
+import re
+import unicodedata
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
+from sqlalchemy.orm import Session
+from ..database import get_db
+from ..deps import require_admin
+from ..security import hash_password
+from ..schemas import (
+    UserOut, UserCreate, UserUpdate, InviteStudentRequest,
+    BookingOut, BlockedSlotCreate, BlockedSlotOut,
+    QuizResponseOut,
 )
-from app.security import hash_password, encrypt_field, decrypt_field, hash_email
+from ..services.scheduling import CREDITS_BY_PLAN, calc_contract_end
+from ..services.email import generate_temp_password, send_invite_email
+from .. import models
+
+
+def _slugify_name(name: str) -> str:
+    normalized = unicodedata.normalize("NFD", name.lower())
+    ascii_name = normalized.encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", "_", ascii_name).strip("_")
+
+
+def _unique_username(db: Session, base: str) -> str:
+    candidate = base
+    suffix = 2
+    while db.query(models.User).filter(models.User.username == candidate).first():
+        candidate = f"{base}_{suffix}"
+        suffix += 1
+    return candidate
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
-def _user_out(user: User) -> UserOut:
-    profile_out = None
-    if user.profile:
-        p = user.profile
-        profile_out = StudentProfileOut(
-            plan=p.plan,
-            credits_total=p.credits_total,
-            credits_used=p.credits_used,
-            credits_remaining=p.credits_total - p.credits_used,
-            max_per_week=p.max_per_week,
-            start_date=p.start_date,
-            end_date=p.end_date,
-        )
-    return UserOut(
-        id=user.id,
-        name=user.name,
-        email=decrypt_field(user.email_encrypted),
-        phone=decrypt_field(user.phone_encrypted) if user.phone_encrypted else None,
-        role=user.role,
-        profile=profile_out,
-        created_at=user.created_at,
-    )
+# ── Students ──────────────────────────────────────────────────────────────────
+
+@router.get("/students", response_model=List[UserOut])
+def list_students(db: Session = Depends(get_db), _=Depends(require_admin)):
+    return db.query(models.User).order_by(models.User.created_at.desc()).all()
 
 
-@router.get("/students", response_model=list[UserOut])
-async def list_students(
-    _: User = Depends(get_admin_user),
-    db: AsyncSession = Depends(get_db),
-):
-    result = await db.execute(
-        select(User)
-        .where(User.role == UserRole.student)
-        .options(selectinload(User.profile))
-        .order_by(User.created_at.desc())
-    )
-    return [_user_out(u) for u in result.scalars().all()]
+@router.post("/students", response_model=UserOut, status_code=201)
+def create_student(body: UserCreate, db: Session = Depends(get_db), _=Depends(require_admin)):
+    if db.query(models.User).filter(models.User.username == body.username).first():
+        raise HTTPException(409, "Usuário já existe")
 
+    credits = body.credits_total or CREDITS_BY_PLAN.get(body.plan or "", 4)
+    contract_end = body.contract_end
+    if body.contract_start and not contract_end and body.plan:
+        contract_end = calc_contract_end(body.contract_start, credits)
 
-@router.post("/students", response_model=UserOut, status_code=status.HTTP_201_CREATED)
-async def create_student(
-    body: AdminCreateStudentRequest,
-    _: User = Depends(get_admin_user),
-    db: AsyncSession = Depends(get_db),
-):
-    email_hash = hash_email(body.email)
-    existing = await db.execute(select(User).where(User.email_hash == email_hash))
-    if existing.scalar_one_or_none():
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email já cadastrado")
-
-    user = User(
-        name=body.name,
-        email_encrypted=encrypt_field(body.email.lower()),
-        email_hash=email_hash,
-        phone_encrypted=encrypt_field(body.phone) if body.phone else None,
-        password_hash=hash_password(body.password),
-        role=UserRole.student,
+    user = models.User(
+        username=body.username,
+        hashed_password=hash_password(body.password),
+        email=body.email,
+        phone=body.phone,
+        role=body.role,
+        turma=body.turma,
+        plan=body.plan,
+        style=body.style,
+        method=body.method,
+        contract_start=body.contract_start,
+        contract_end=contract_end,
+        credits_total=credits,
     )
     db.add(user)
-    await db.flush()
+    db.commit()
+    db.refresh(user)
+    return user
 
-    plan = body.plan
-    profile = StudentProfile(
-        user_id=user.id,
-        plan=plan,
-        credits_total=PLAN_CREDITS[plan],
-        credits_used=0,
-        max_per_week=PLAN_MAX_PER_WEEK[plan],
-        start_date=body.start_date,
-        end_date=body.end_date,
+
+@router.post("/students/invite", response_model=UserOut, status_code=201)
+def invite_student(
+    body: InviteStudentRequest,
+    db: Session = Depends(get_db),
+    _=Depends(require_admin),
+):
+    if db.query(models.User).filter(models.User.email == body.email).first():
+        raise HTTPException(409, "E-mail já cadastrado")
+
+    username = _unique_username(db, _slugify_name(body.name))
+    temp_password = generate_temp_password()
+
+    user = models.User(
+        username=username,
+        hashed_password=hash_password(temp_password),
+        email=body.email,
+        role="student",
+        must_change_password=True,
     )
-    db.add(profile)
-    await db.commit()
-    await db.refresh(user)
-    await db.refresh(profile)
-    user.profile = profile
-    return _user_out(user)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    send_invite_email(body.email, body.name, username, temp_password)
+    return user
 
 
 @router.patch("/students/{user_id}", response_model=UserOut)
-async def update_student(
-    user_id: uuid.UUID,
-    body: AdminUpdateStudentRequest,
-    _: User = Depends(get_admin_user),
-    db: AsyncSession = Depends(get_db),
+def update_student(
+    user_id: int, body: UserUpdate,
+    db: Session = Depends(get_db), _=Depends(require_admin),
 ):
-    result = await db.execute(
-        select(User).where(User.id == user_id, User.role == UserRole.student)
-        .options(selectinload(User.profile))
+    user = db.get(models.User, user_id)
+    if not user:
+        raise HTTPException(404, "Usuário não encontrado")
+
+    for field, value in body.model_dump(exclude_unset=True).items():
+        if field == "password":
+            user.hashed_password = hash_password(value)
+        else:
+            setattr(user, field, value)
+
+    # Auto-calc contract end if plan/start changed and no explicit end given
+    if body.contract_start and not body.contract_end and user.plan:
+        credits = user.credits_total or CREDITS_BY_PLAN.get(user.plan, 4)
+        user.contract_end = calc_contract_end(user.contract_start, credits)
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@router.delete("/students/{user_id}", status_code=204)
+def delete_student(user_id: int, db: Session = Depends(get_db), _=Depends(require_admin)):
+    user = db.get(models.User, user_id)
+    if not user:
+        raise HTTPException(404, "Usuário não encontrado")
+    db.delete(user)
+    db.commit()
+
+
+# ── Bookings ──────────────────────────────────────────────────────────────────
+
+@router.get("/bookings", response_model=List[BookingOut])
+def list_bookings(db: Session = Depends(get_db), _=Depends(require_admin)):
+    rows = (
+        db.query(models.Booking, models.User.username)
+        .join(models.User)
+        .filter(models.Booking.status == "confirmed")
+        .order_by(models.Booking.date, models.Booking.time_slot)
+        .all()
     )
-    user = result.scalar_one_or_none()
-    if not user:
-        raise HTTPException(status_code=404, detail="Aluno não encontrado")
-
-    if body.name is not None:
-        user.name = body.name
-    if body.phone is not None:
-        user.phone_encrypted = encrypt_field(body.phone)
-
-    if user.profile is None and body.plan is not None:
-        plan = body.plan
-        profile = StudentProfile(
-            user_id=user.id,
-            plan=plan,
-            credits_total=PLAN_CREDITS[plan],
-            credits_used=0,
-            max_per_week=PLAN_MAX_PER_WEEK[plan],
-            start_date=body.start_date,
-            end_date=body.end_date,
-        )
-        db.add(profile)
-    elif user.profile is not None:
-        p = user.profile
-        if body.plan is not None:
-            p.plan = body.plan
-            p.credits_total = PLAN_CREDITS[body.plan]
-            p.max_per_week = PLAN_MAX_PER_WEEK[body.plan]
-        if body.credits_used is not None:
-            p.credits_used = body.credits_used
-        if body.start_date is not None:
-            p.start_date = body.start_date
-        if body.end_date is not None:
-            p.end_date = body.end_date
-
-    await db.commit()
-    await db.refresh(user)
-    return _user_out(user)
+    result = []
+    for booking, username in rows:
+        booking.username = username
+        result.append(booking)
+    return result
 
 
-@router.delete("/students/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_student(
-    user_id: uuid.UUID,
-    _: User = Depends(get_admin_user),
-    db: AsyncSession = Depends(get_db),
+@router.delete("/bookings/{booking_id}", status_code=204)
+def cancel_booking_admin(
+    booking_id: int, db: Session = Depends(get_db), _=Depends(require_admin),
 ):
-    result = await db.execute(select(User).where(User.id == user_id, User.role == UserRole.student))
-    user = result.scalar_one_or_none()
-    if not user:
-        raise HTTPException(status_code=404, detail="Aluno não encontrado")
-    await db.delete(user)
-    await db.commit()
+    booking = db.get(models.Booking, booking_id)
+    if not booking:
+        raise HTTPException(404, "Agendamento não encontrado")
+    booking.status = "cancelled"
+    db.commit()
+
+
+# ── Blocked Slots ─────────────────────────────────────────────────────────────
+
+@router.get("/blocked-slots", response_model=List[BlockedSlotOut])
+def list_blocked_slots(db: Session = Depends(get_db), _=Depends(require_admin)):
+    return db.query(models.BlockedSlot).order_by(models.BlockedSlot.date).all()
+
+
+@router.post("/blocked-slots", response_model=BlockedSlotOut, status_code=201)
+def block_slot(
+    body: BlockedSlotCreate,
+    db: Session = Depends(get_db),
+    admin: models.User = Depends(require_admin),
+):
+    existing = db.query(models.BlockedSlot).filter(
+        models.BlockedSlot.date == body.date,
+        models.BlockedSlot.time_slot == body.time_slot,
+    ).first()
+    if existing:
+        raise HTTPException(409, "Slot já bloqueado")
+    block = models.BlockedSlot(
+        date=body.date, time_slot=body.time_slot,
+        reason=body.reason, created_by=admin.id,
+    )
+    db.add(block)
+    db.commit()
+    db.refresh(block)
+    return block
+
+
+@router.delete("/blocked-slots/{block_id}", status_code=204)
+def unblock_slot(block_id: int, db: Session = Depends(get_db), _=Depends(require_admin)):
+    block = db.get(models.BlockedSlot, block_id)
+    if not block:
+        raise HTTPException(404, "Bloqueio não encontrado")
+    db.delete(block)
+    db.commit()
+
+
+# ── Quiz Responses ────────────────────────────────────────────────────────────
+
+@router.get("/quiz-responses", response_model=List[QuizResponseOut])
+def list_quiz_responses(db: Session = Depends(get_db), _=Depends(require_admin)):
+    return (
+        db.query(models.QuizResponse)
+        .order_by(models.QuizResponse.created_at.desc())
+        .limit(200)
+        .all()
+    )
+
+
+# ── CSV Export ────────────────────────────────────────────────────────────────
+
+@router.get("/export/bookings.csv")
+def export_bookings_csv(db: Session = Depends(get_db), _=Depends(require_admin)):
+    rows = (
+        db.query(models.Booking, models.User.username)
+        .join(models.User)
+        .filter(models.Booking.status == "confirmed")
+        .order_by(models.Booking.date, models.Booking.time_slot)
+        .all()
+    )
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["Aluno", "Data", "Horário"])
+    for booking, username in rows:
+        writer.writerow([username, booking.date.isoformat(), booking.time_slot])
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=agendamentos.csv"},
+    )

@@ -1,117 +1,57 @@
-import { Box, Typography, Grid } from '@mui/material'
+import SectionLabel from '../ui/SectionLabel'
 
 export default function TeacherJuli() {
   return (
-    <Box
-      id="teacher"
-      sx={{ background: '#F5EFE4', py: { xs: 6, md: 10 }, px: { xs: 3, md: 6 } }}
-    >
-      <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
-        <Grid container spacing={6} alignItems="center">
-          {/* Foto: frontend/public/images/teacher-juli.jpg */}
-          <Grid item xs={12} md={5}>
-            <Box
-              component="img"
-              src="/images/teacher-juli.jpg"
-              alt="Teacher Juli"
-              onError={(e) => {
-                e.target.style.display = 'none'
-                e.target.nextSibling.style.display = 'flex'
-              }}
-              sx={{
-                width: '100%',
-                aspectRatio: '3/4',
-                objectFit: 'cover',
-                borderRadius: 4,
-              }}
-            />
-            {/* Placeholder enquanto a foto não for adicionada */}
-            <Box
-              sx={{
-                display: 'none',
-                width: '100%',
-                aspectRatio: '3/4',
-                background: 'rgba(74,94,58,0.1)',
-                borderRadius: 4,
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#7A8A6A',
-                fontSize: '0.875rem',
-                flexDirection: 'column',
-                gap: 1,
-              }}
-            >
-              <Typography sx={{ color: '#7A8A6A', fontSize: '0.8rem' }}>
-                Adicione a foto em:
-              </Typography>
-              <Typography sx={{ color: '#4A5E3A', fontSize: '0.75rem', fontFamily: 'monospace' }}>
-                frontend/public/images/teacher-juli.jpg
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={7}>
-            <Typography
-              variant="h2"
-              sx={{ fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#2E3B24', mb: 2 }}
-            >
-              Teacher Juli
-            </Typography>
-            <Typography
-              sx={{
-                fontFamily: '"Lora", serif',
-                fontStyle: 'italic',
-                color: '#C8881A',
-                mb: 3,
-                fontSize: '1rem',
-              }}
-            >
-              "Recalculando rota" — a história da NOMA
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '0.9375rem',
-                fontWeight: 300,
-                color: '#4A5E3A',
-                lineHeight: 1.8,
-                mb: 2,
-              }}
-            >
-              Comecei a faculdade de farmácia. Não era o que eu queria, mas era o caminho "certo". Um dia resolvi parar, respirar e recalcular a rota — e foi aí que o inglês entrou na minha vida de verdade.
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '0.9375rem',
-                fontWeight: 300,
-                color: '#4A5E3A',
-                lineHeight: 1.8,
-                mb: 3,
-              }}
-            >
-              NOMA vem de nômade. A ideia de pertencer a vários lugares ao mesmo tempo, de não ter um único caminho fixo. É exatamente o que quero para os meus alunos: um inglês que os leve a qualquer lugar — real ou metafórico.
-            </Typography>
+    <section id="teacher-juli" className="bg-cream py-20 px-6">
+      <div className="max-w-[860px] mx-auto">
+        <div className="text-center mb-14">
+          <SectionLabel className="text-green">About me</SectionLabel>
+          <h2 className="font-serif text-[clamp(2.2rem,4vw,3.5rem)] font-semibold leading-[1.1] text-green-dark">
+            Uma trajetória que<br /><em className="italic text-gold">não foi em linha reta</em>
+          </h2>
+        </div>
 
-            <Box
-              sx={{
-                p: 3,
-                background: 'rgba(74,94,58,0.07)',
-                borderLeft: '3px solid #C8881A',
-                borderRadius: '0 8px 8px 0',
-              }}
-            >
-              <Typography
-                sx={{
-                  fontFamily: '"Lora", serif',
-                  fontStyle: 'italic',
-                  color: '#2E3B24',
-                  lineHeight: 1.7,
-                }}
-              >
-                "Eu não ensino inglês. Eu abro uma porta para que cada aluno descubra o seu próprio caminho dentro do idioma."
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    </Box>
+        {/* Foto + texto */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-18">
+          <div className="flex justify-center">
+            <div className="rounded-full overflow-hidden w-[260px] h-[340px] shadow-[0_12px_50px_rgba(74,94,58,0.2)]">
+              <img src="/images/foto_1.png" alt="Teacher Juli" className="w-full h-full object-cover object-top" />
+            </div>
+          </div>
+          <div>
+            <p className="text-[0.75rem] tracking-[0.14em] uppercase text-green font-semibold mb-3">Sobre mim</p>
+            <h3 className="font-serif text-[1.8rem] font-semibold text-green-dark mb-4">Teacher Juli</h3>
+            <p className="font-lora text-[1.05rem] italic text-green-dark leading-[1.85] mb-5">
+              "Por quatro anos, estudei farmácia. Aprendi muito, mas sentia que estava no lugar errado. Sabia só que queria ajudar as pessoas de verdade."
+            </p>
+            <p className="text-[0.93rem] text-muted leading-[1.8] mb-4">
+              Com 21 anos e sem uma direção clara, me candidatei quase sem querer para uma vaga de professora de inglês. Não esperava que fosse mudar tudo.
+            </p>
+            <p className="text-[0.93rem] text-muted leading-[1.8]">
+              Hoje sou professora de inglês há 2 anos e estudante de Letras na UNIVESP.
+            </p>
+          </div>
+        </div>
+
+        {/* texto + foto */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mt-16">
+          <div>
+            <p className="text-[0.75rem] tracking-[0.14em] uppercase text-green font-semibold mb-3">Por que NOMA</p>
+            <h3 className="font-serif text-[1.8rem] font-semibold text-green-dark mb-4">Recalcular a rota</h3>
+            <p className="text-[0.93rem] text-muted leading-[1.8] mb-4">
+              NOMA vem de nômade. Da necessidade de mudar, de recalcular a rota. Surgiu da percepção de que as escolas são muito engessadas, presas a um livro, sem espaço para o aluno ser quem é.
+            </p>
+            <p className="font-lora text-base italic text-green-dark leading-[1.85]">
+              "A NOMA nasceu da necessidade de ir mais longe."
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <div className="rounded-[24px] overflow-hidden w-full max-w-[320px] h-[420px] shadow-[0_12px_50px_rgba(74,94,58,0.15)]">
+              <img src="/images/foto_2.png" alt="Teacher Juli" className="w-full h-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }
