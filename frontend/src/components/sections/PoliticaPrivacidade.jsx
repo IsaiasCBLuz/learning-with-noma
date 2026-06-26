@@ -1,69 +1,67 @@
 import { useState } from 'react'
-import SectionLabel from '../ui/SectionLabel'
-
-const WA_DELETE = 'https://wa.me/5515988137161?text=Ola%20Teacher%20Juli,%20gostaria%20de%20solicitar%20a%20exclusao%20dos%20meus%20dados%20da%20NOMA.'
-
-const items = [
-  {
-    title: 'Quem somos',
-    text: 'A NOMA English School é uma escola virtual de inglês conduzida por Juliana (Teacher Juli). Responsável pelos dados: Teacher Juli — contato via WhatsApp (15) 98813-7161 ou Instagram @learnwith.noma.',
-  },
-  {
-    title: 'Quais dados coletamos',
-    text: 'Coletamos apenas o necessário: nome completo, e-mail e WhatsApp (opcional) fornecidos no quiz ou no cadastro da área do aluno. Também armazenamos as respostas do quiz e os horários de aulas agendadas.',
-  },
-  {
-    title: 'Para que usamos',
-    text: 'Os dados são usados exclusivamente para entrar em contato após o quiz, gerenciar agendamentos e personalizar a experiência de ensino. Não vendemos, compartilhamos nem usamos seus dados para publicidade.',
-  },
-  {
-    title: 'Por quanto tempo guardamos',
-    text: 'Respostas do quiz e dados de contato: até 2 anos. Agendamentos: 6 meses após a data da aula.',
-  },
-  {
-    title: 'Seus direitos (Lei 13.709/2018)',
-    text: 'Você tem direito a acessar, corrigir, solicitar exclusão e revogar o consentimento a qualquer momento via WhatsApp ou Instagram.',
-  },
-]
 
 export default function PoliticaPrivacidade() {
   const [open, setOpen] = useState(false)
 
   return (
-    <section id="politica-privacidade" className="bg-[#f0ece4] py-12 px-6">
-      <div className="max-w-[760px] mx-auto">
-        <button onClick={() => setOpen(o => !o)}
-          className="inline-flex items-center gap-2 bg-transparent border-[1.5px] border-[rgba(74,94,58,0.25)] text-green-dark px-6 py-[0.7rem] rounded-full text-[0.875rem] cursor-pointer font-sans mb-6 transition-all hover:border-[rgba(74,94,58,0.5)]">
+    <section id="politica-privacidade" style={{ background: '#f9f4ec', padding: '3rem 1.5rem' }}>
+      <div style={{ maxWidth: '760px', margin: '0 auto' }}>
+        <button
+          onClick={() => setOpen(o => !o)}
+          id="privacidade-btn"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'transparent',
+            border: '1.5px solid rgba(74,94,58,0.25)',
+            color: 'var(--green-dark)',
+            padding: '0.7rem 1.5rem',
+            borderRadius: '100px',
+            fontSize: '0.875rem',
+            cursor: 'pointer',
+            fontFamily: "'DM Sans', sans-serif",
+            marginBottom: '1.5rem',
+            transition: 'all .2s'
+          }}
+        >
           {open ? 'Fechar ↑' : 'Ler política de privacidade ↓'}
         </button>
-
-        {open && (
-          <div>
-            <SectionLabel className="text-green">LGPD</SectionLabel>
-            <h2 className="font-serif text-[clamp(2.2rem,4vw,3.5rem)] font-semibold leading-[1.1] text-green-dark mb-8">
-              Política de <em className="italic text-gold">Privacidade</em>
-            </h2>
-
-            <div className="flex flex-col gap-6 text-[0.9rem] text-muted leading-[1.9]">
-              {items.map(item => (
-                <div key={item.title}>
-                  <h3 className="font-serif text-[1.2rem] font-semibold text-green-dark mb-2">{item.title}</h3>
-                  <p>{item.text}</p>
-                </div>
-              ))}
-
-              <div className="bg-[rgba(74,94,58,0.08)] rounded-[16px] px-6 py-5">
-                <h3 className="font-serif text-[1.1rem] font-semibold text-green-dark mb-2">Solicitar exclusão dos seus dados</h3>
-                <p className="mb-4">Envie uma mensagem com seu nome e e-mail cadastrado.</p>
-                <a href={WA_DELETE} target="_blank" rel="noopener"
-                  className="inline-block bg-green text-cream no-underline py-3 px-6 rounded-full text-[0.875rem] font-medium transition-all hover:bg-green-dark">
-                  Solicitar exclusão via WhatsApp
-                </a>
-              </div>
+        <div id="privacidade-conteudo" style={{ display: open ? 'block' : 'none' }}>
+          <p className="section-label" style={{ color: 'var(--green)' }}>LGPD</p>
+          <h2 className="section-title" style={{ color: 'var(--green-dark)', marginBottom: '2rem' }}>Política de <em>Privacidade</em></h2>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.9', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem', fontWeight: 600, color: 'var(--green-dark)', marginBottom: '0.5rem' }}>Quem somos</h3>
+              <p>A NOMA English School é uma escola virtual de inglês conduzida por Juliana (Teacher Juli). Responsável pelos dados: Teacher Juli — contato via WhatsApp (15) 98813-7161 ou Instagram @learnwith.noma.</p>
+            </div>
+            <div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem', fontWeight: 600, color: 'var(--green-dark)', marginBottom: '0.5rem' }}>Quais dados coletamos</h3>
+              <p>Coletamos apenas o necessário: <strong style={{ color: 'var(--green-dark)' }}>nome completo, e-mail e WhatsApp</strong> (opcional) fornecidos no quiz ou no cadastro da área do aluno. Também armazenamos as respostas do quiz e os horários de aulas agendadas.</p>
+            </div>
+            <div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem', fontWeight: 600, color: 'var(--green-dark)', marginBottom: '0.5rem' }}>Para que usamos</h3>
+              <p>Os dados são usados exclusivamente para entrar em contato após o quiz, gerenciar agendamentos e personalizar a experiência de ensino. Não vendemos, compartilhamos nem usamos seus dados para publicidade.</p>
+            </div>
+            <div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem', fontWeight: 600, color: 'var(--green-dark)', marginBottom: '0.5rem' }}>Por quanto tempo guardamos</h3>
+              <p>Respostas do quiz e dados de contato: até <strong style={{ color: 'var(--green-dark)' }}>2 anos</strong>. Agendamentos: <strong style={{ color: 'var(--green-dark)' }}>6 meses</strong> após a data da aula.</p>
+            </div>
+            <div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem', fontWeight: 600, color: 'var(--green-dark)', marginBottom: '0.5rem' }}>Seus direitos (Lei 13.709/2018)</h3>
+              <p>Você tem direito a acessar, corrigir, solicitar exclusão e revogar o consentimento a qualquer momento via WhatsApp ou Instagram.</p>
+            </div>
+            <div style={{ background: 'rgba(74,94,58,0.08)', borderRadius: '16px', padding: '1.25rem 1.5rem' }}>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.1rem', fontWeight: 600, color: 'var(--green-dark)', marginBottom: '0.5rem' }}>Solicitar exclusão dos seus dados</h3>
+              <p style={{ marginBottom: '1rem' }}>Envie uma mensagem com seu nome e e-mail cadastrado.</p>
+              <a href="https://wa.me/5515988137161?text=Ola%20Teacher%20Juli,%20gostaria%20de%20solicitar%20a%20exclusao%20dos%20meus%20dados%20da%20NOMA." target="_blank" rel="noopener" className="btn-primary" style={{ fontSize: '0.875rem', padding: '0.75rem 1.5rem' }}>
+                Solicitar exclusão via WhatsApp
+              </a>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   )
 }
+

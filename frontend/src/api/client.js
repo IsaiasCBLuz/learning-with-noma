@@ -1,37 +1,50 @@
 import axios from 'axios'
 
+const baseURL = import.meta.env.VITE_API_URL || '/api'
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL,
   headers: { 'Content-Type': 'application/json' },
 })
 
+// Interceptor: add JWT token to all requests
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  const token = localStorage.getItem('noma_access_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
   return config
 })
 
+// Interceptor: auto-refresh on 401
 api.interceptors.response.use(
-  (res) => res,
-  async (err) => {
-    const original = err.config
-    if (err.response?.status === 401 && !original._retry) {
+  (response) => response,
+  async (error) => {
+    const original = error.config
+    if (error.response?.status === 401 && !original._retry) {
       original._retry = true
-      const refresh = localStorage.getItem('refresh_token')
-      if (refresh) {
+      const refreshToken = localStorage.getItem('noma_refresh_token')
+      if (refreshToken) {
         try {
-          const { data } = await axios.post('/api/auth/refresh', { refresh_token: refresh })
-          localStorage.setItem('access_token', data.access_token)
-          original.headers.Authorization = `Bearer ${data.access_token}`
+          const res = await axios.post(`${baseURL}/auth/refresh`, {
+            refresh_token: refreshToken,
+          })
+          const { access_token, refresh_token } = res.data
+          localStorage.setItem('noma_access_token', access_token)
+          localStorage.setItem('noma_refresh_token', refresh_token)
+          original.headers.Authorization = `Bearer ${access_token}`
           return api(original)
         } catch {
-          localStorage.removeItem('access_token')
-          localStorage.removeItem('refresh_token')
-          window.location.href = '/aluno/login'
+          localStorage.removeItem('noma_access_token')
+          localStorage.removeItem('noma_refresh_token')
+          localStorage.removeItem('noma_user')
+          window.location.href = '/login'
         }
+      } else {
+        window.location.href = '/login'
       }
     }
-    return Promise.reject(err)
+    return Promise.reject(error)
   }
 )
 

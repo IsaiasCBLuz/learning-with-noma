@@ -7,6 +7,7 @@ import Turmas from '../components/sections/Turmas'
 import AulaExperimental from '../components/sections/AulaExperimental'
 import Planos from '../components/sections/Planos'
 import Quiz from '../components/sections/Quiz'
+import AreaAluno from '../components/sections/AreaAluno'
 import TeacherJuli from '../components/sections/TeacherJuli'
 import PoliticaPrivacidade from '../components/sections/PoliticaPrivacidade'
 
@@ -22,6 +23,7 @@ export default function Home() {
         <AulaExperimental />
         <Planos />
         <Quiz />
+        <AreaAluno />
         <TeacherJuli />
         <PoliticaPrivacidade />
       </main>
@@ -29,3 +31,4 @@ export default function Home() {
     </>
   )
 }
+

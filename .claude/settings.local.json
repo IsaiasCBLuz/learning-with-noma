@@ -65,7 +65,10 @@
       "PowerShell(Stop-Process -Force -ErrorAction SilentlyContinue)",
       "Bash(python -c \"import sys,json; u=json.load\\(sys.stdin\\); print\\('must_change_password depois:', u.get\\('must_change_password'\\)\\)\")",
       "Bash(curl -s -X POST http://localhost:8000/auth/login -H 'Content-Type: application/json' -d '{\"username\":\"teste_senha\",\"password\":\"NovaSenha99\"}')",
-      "Bash(python -c \"import sys,json; print\\(json.load\\(sys.stdin\\).get\\('detail'\\)\\)\")"
+      "Bash(python -c \"import sys,json; print\\(json.load\\(sys.stdin\\).get\\('detail'\\)\\)\")",
+      "PowerShell(Get-Process -Name \"python\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force)",
+      "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)"
     ]
   }
 }

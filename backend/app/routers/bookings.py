@@ -1,23 +1,17 @@
+"""
+NOMA Bookings Router — student booking requests, slot grid.
+"""
 from datetime import date, datetime, timezone, timedelta
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session, joinedload
 from ..database import get_db
 from ..deps import get_current_user
 from ..schemas import BookingCreate, BookingOut, SlotInfo
-from ..services.scheduling import (
-    ALL_SLOTS, DEFAULT_BLOCKED_SLOTS, SYSTEM_BLOCK_UNTIL,
-    WEEKLY_FREQ, is_business_day
-)
+from ..services.scheduling import ALL_SLOTS, DEFAULT_BLOCKED_SLOTS, is_business_day, get_week_dates
 from .. import models
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
-
-
-def _week_dates(offset: int = 0) -> list[date]:
-    today = date.today()
-    monday = today - timedelta(days=today.weekday()) + timedelta(weeks=offset)
-    return [monday + timedelta(days=i) for i in range(5)]
 
 
 @router.get("/slots", response_model=List[SlotInfo])
@@ -26,28 +20,41 @@ def get_slots(
     db: Session = Depends(get_db),
     user: models.User = Depends(get_current_user),
 ):
-    days = _week_dates(week_offset)
+    """Get slot grid for a given week. Returns status for each slot."""
+    days = get_week_dates(offset=week_offset)
     now = datetime.now(timezone.utc)
 
+    # Load profile for student
+    profile = None
+    if user.role == "student":
+        profile = db.query(models.StudentProfile).filter(
+            models.StudentProfile.user_id == user.id
+        ).first()
+
+    weekly_limit = 1
+    if profile and profile.plan:
+        plan = db.query(models.Plan).get(profile.plan_id)
+        if plan:
+            weekly_limit = plan.weekly_frequency
+
+    # Fetch all confirmed + pending bookings for this week
     all_bookings = db.query(models.Booking).filter(
         models.Booking.date.in_(days),
-        models.Booking.status == "confirmed",
+        models.Booking.status.in_(["confirmed", "pending"]),
     ).all()
 
+    # Admin blocked slots
     admin_blocks = {
         (b.date, b.time_slot)
-        for b in db.query(models.BlockedSlot).filter(models.BlockedSlot.date.in_(days)).all()
+        for b in db.query(models.BlockedSlot).filter(
+            models.BlockedSlot.date.in_(days)
+        ).all()
     }
 
-    my_bookings_by_week = db.query(models.Booking).filter(
-        models.Booking.user_id == user.id,
-        models.Booking.date.in_(days),
-        models.Booking.status == "confirmed",
-    ).all()
-
-    weekly_limit = WEEKLY_FREQ.get(user.plan or "", 1)
-    my_week_count = len(my_bookings_by_week)
-    my_booked_dates = {b.date for b in my_bookings_by_week}
+    # My bookings this week
+    my_bookings = [b for b in all_bookings if b.student_id == user.id]
+    my_week_count = len([b for b in my_bookings if b.status == "confirmed"])
+    my_booked_dates = {b.date for b in my_bookings}
 
     result = []
     for d in days:
@@ -56,40 +63,41 @@ def get_slots(
         for slot in ALL_SLOTS:
             dt = datetime(d.year, d.month, d.day,
                           int(slot[:2]), int(slot[3:]), tzinfo=timezone.utc)
+
+            # Past slots
             if dt <= now:
                 result.append(SlotInfo(date=d, time_slot=slot, status="past"))
                 continue
 
-            # System-wide block until July 1, 2026
-            if d < SYSTEM_BLOCK_UNTIL:
-                result.append(SlotInfo(date=d, time_slot=slot, status="blocked"))
-                continue
-
-            # Admin manual block
+            # Admin blocked
             if (d, slot) in admin_blocks:
                 result.append(SlotInfo(date=d, time_slot=slot, status="blocked"))
                 continue
 
-            # Default slot block (before 19h) — unless admin unblocked via blocked_slots removal
+            # Default blocked slots
             if slot in DEFAULT_BLOCKED_SLOTS:
                 result.append(SlotInfo(date=d, time_slot=slot, status="blocked"))
                 continue
 
             # Contract end
-            if user.contract_end and d > user.contract_end:
+            if profile and profile.contract_end and d > profile.contract_end:
                 result.append(SlotInfo(date=d, time_slot=slot, status="out_of_contract"))
                 continue
 
             # Check existing bookings for this slot
-            slot_booking = next((b for b in all_bookings if b.date == d and b.time_slot == slot), None)
+            slot_booking = next(
+                (b for b in all_bookings if b.date == d and b.time_slot == slot),
+                None,
+            )
             if slot_booking:
-                if slot_booking.user_id == user.id:
-                    result.append(SlotInfo(date=d, time_slot=slot, status="mine"))
+                if slot_booking.student_id == user.id:
+                    status_val = "pending" if slot_booking.status == "pending" else "mine"
+                    result.append(SlotInfo(date=d, time_slot=slot, status=status_val))
                 else:
                     result.append(SlotInfo(date=d, time_slot=slot, status="occupied"))
                 continue
 
-            # Weekly limit reached
+            # Weekly limit
             if my_week_count >= weekly_limit and d not in my_booked_dates:
                 result.append(SlotInfo(date=d, time_slot=slot, status="limit"))
                 continue
@@ -99,60 +107,108 @@ def get_slots(
                 result.append(SlotInfo(date=d, time_slot=slot, status="limit"))
                 continue
 
+            # No credits remaining
+            if profile and profile.credits_remaining <= 0:
+                result.append(SlotInfo(date=d, time_slot=slot, status="limit"))
+                continue
+
             result.append(SlotInfo(date=d, time_slot=slot, status="free"))
 
     return result
 
 
 @router.post("", response_model=BookingOut, status_code=201)
-def create_booking(
+def request_booking(
     body: BookingCreate,
     db: Session = Depends(get_db),
     user: models.User = Depends(get_current_user),
 ):
+    """Student requests a booking. Status starts as 'pending' for admin approval."""
     if not is_business_day(body.date):
         raise HTTPException(400, "Data bloqueada (feriado ou recesso)")
-    if body.date < SYSTEM_BLOCK_UNTIL:
-        raise HTTPException(400, "Período bloqueado pelo sistema")
     if body.time_slot in DEFAULT_BLOCKED_SLOTS:
         raise HTTPException(400, "Horário bloqueado")
-    if user.contract_end and body.date > user.contract_end:
-        raise HTTPException(400, "Data fora do contrato")
 
-    # Check if slot is free
+    # Check profile & credits
+    profile = db.query(models.StudentProfile).filter(
+        models.StudentProfile.user_id == user.id
+    ).first()
+
+    if profile:
+        if profile.contract_end and body.date > profile.contract_end:
+            raise HTTPException(400, "Data fora do contrato")
+        if profile.credits_remaining <= 0:
+            raise HTTPException(400, "Sem créditos disponíveis")
+
+    # Check admin block
+    blocked = db.query(models.BlockedSlot).filter(
+        models.BlockedSlot.date == body.date,
+        models.BlockedSlot.time_slot == body.time_slot,
+    ).first()
+    if blocked:
+        raise HTTPException(400, "Horário bloqueado pelo administrador")
+
+    # Check slot availability
     existing = db.query(models.Booking).filter(
         models.Booking.date == body.date,
         models.Booking.time_slot == body.time_slot,
-        models.Booking.status == "confirmed",
+        models.Booking.status.in_(["confirmed", "pending"]),
     ).first()
     if existing:
         raise HTTPException(409, "Horário já ocupado")
 
-    week_days = _week_dates(
-        (body.date - date.today()).days // 7
-    )
-    my_week = db.query(models.Booking).filter(
-        models.Booking.user_id == user.id,
+    # Check weekly limit
+    week_days = get_week_dates(reference_date=body.date)
+    plan = None
+    if profile and profile.plan_id:
+        plan = db.query(models.Plan).get(profile.plan_id)
+
+    weekly_limit = plan.weekly_frequency if plan else 1
+    my_week_count = db.query(models.Booking).filter(
+        models.Booking.student_id == user.id,
         models.Booking.date.in_(week_days),
-        models.Booking.status == "confirmed",
+        models.Booking.status.in_(["confirmed", "pending"]),
     ).count()
-    if my_week >= WEEKLY_FREQ.get(user.plan or "", 1):
+    if my_week_count >= weekly_limit:
         raise HTTPException(400, "Limite semanal atingido")
 
-    my_day = db.query(models.Booking).filter(
-        models.Booking.user_id == user.id,
+    # Check daily limit
+    my_day_count = db.query(models.Booking).filter(
+        models.Booking.student_id == user.id,
         models.Booking.date == body.date,
-        models.Booking.status == "confirmed",
+        models.Booking.status.in_(["confirmed", "pending"]),
     ).count()
-    if my_day >= 1:
+    if my_day_count >= 1:
         raise HTTPException(400, "Já existe uma aula neste dia")
 
-    booking = models.Booking(user_id=user.id, date=body.date, time_slot=body.time_slot)
+    booking = models.Booking(
+        student_id=user.id,
+        date=body.date,
+        time_slot=body.time_slot,
+        status="pending",
+        requested_by="student",
+    )
     db.add(booking)
+
+    # Create notification for admins
+    admins = db.query(models.User).filter(models.User.role == "admin", models.User.is_active == True).all()
+    for admin in admins:
+        notif = models.Notification(
+            user_id=admin.id,
+            type="booking",
+            title="Novo agendamento pendente",
+            message=f"{user.full_name} solicitou aula em {body.date.strftime('%d/%m')} às {body.time_slot}",
+            action_url="/admin/agenda",
+            related_id=booking.id,
+        )
+        db.add(notif)
+
     db.commit()
     db.refresh(booking)
-    booking.username = user.username
-    return booking
+
+    out = BookingOut.model_validate(booking)
+    out.student_name = user.full_name
+    return out
 
 
 @router.get("/mine", response_model=List[BookingOut])
@@ -162,17 +218,20 @@ def get_my_bookings(
 ):
     rows = (
         db.query(models.Booking)
-        .filter(models.Booking.user_id == user.id)
-        .order_by(models.Booking.date, models.Booking.time_slot)
+        .filter(models.Booking.student_id == user.id)
+        .order_by(models.Booking.date.desc(), models.Booking.time_slot)
         .all()
     )
+    result = []
     for r in rows:
-        r.username = user.username
-    return rows
+        out = BookingOut.model_validate(r)
+        out.student_name = user.full_name
+        result.append(out)
+    return result
 
 
 @router.delete("/{booking_id}", status_code=204)
-def cancel_booking(
+def cancel_my_booking(
     booking_id: int,
     db: Session = Depends(get_db),
     user: models.User = Depends(get_current_user),
@@ -180,9 +239,25 @@ def cancel_booking(
     booking = db.get(models.Booking, booking_id)
     if not booking:
         raise HTTPException(404, "Agendamento não encontrado")
-    if booking.user_id != user.id:
+    if booking.student_id != user.id:
         raise HTTPException(403, "Acesso negado")
-    if booking.date <= date.today():
+    if booking.status not in ("pending", "confirmed"):
+        raise HTTPException(400, "Não é possível cancelar este agendamento")
+    if booking.status == "confirmed" and booking.date <= date.today():
         raise HTTPException(400, "Só é possível cancelar aulas futuras")
+
+    was_confirmed = booking.status == "confirmed"
     booking.status = "cancelled"
+    booking.cancelled_at = datetime.now(timezone.utc)
+    booking.cancelled_by_id = user.id
+
+    # Refund credit if was confirmed
+    if was_confirmed:
+        profile = db.query(models.StudentProfile).filter(
+            models.StudentProfile.user_id == user.id
+        ).first()
+        if profile:
+            profile.credits_remaining += 1
+            profile.credits_used = max(0, profile.credits_used - 1)
+
     db.commit()
