@@ -3,17 +3,25 @@ NOMA API — main FastAPI application.
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from .config import settings
 from .routers import auth, users, bookings, quiz, admin, assessments, payments, notifications
 
 app = FastAPI(title="NOMA API", version="2.0.0")
 
+origins = [
+    "http://localhost:5173",
+    "http://localhost:4173",
+    "http://localhost:5174",
+]
+if settings.FRONTEND_URL:
+    for url in settings.FRONTEND_URL.split(","):
+        clean_url = url.strip()
+        if clean_url and clean_url not in origins:
+            origins.append(clean_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:4173",
-        "http://localhost:5174",
-    ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
