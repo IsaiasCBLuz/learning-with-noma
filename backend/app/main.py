@@ -15,7 +15,7 @@ origins = [
 ]
 if settings.FRONTEND_URL:
     for url in settings.FRONTEND_URL.split(","):
-        clean_url = url.strip()
+        clean_url = url.strip().rstrip("/")
         if clean_url and clean_url not in origins:
             origins.append(clean_url)
 
